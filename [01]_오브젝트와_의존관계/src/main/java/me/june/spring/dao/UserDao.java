@@ -5,19 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import me.june.spring.domain.User;
+import me.june.spring.infra.ConnectionMaker;
 import me.june.spring.infra.SimpleConnectionMaker;
 
 public class UserDao {
 
-    private SimpleConnectionMaker simpleConnectionMaker;
+    private ConnectionMaker connectionMaker;
 
     public UserDao() {
-        simpleConnectionMaker = new SimpleConnectionMaker();
+        connectionMaker = new SimpleConnectionMaker();
     }
 
-
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection conn = simpleConnectionMaker.makeNewConnection();
+        Connection conn = connectionMaker.makeConnection();
 
         PreparedStatement ps = conn.prepareStatement(
             "insert into users (id, name, password) values (?, ?, ?)");
@@ -32,7 +32,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection conn = simpleConnectionMaker.makeNewConnection();
+        Connection conn = connectionMaker.makeConnection();
 
         PreparedStatement ps = conn.prepareStatement(
             "select * from users where id = ?");
