@@ -1,4 +1,6 @@
 # Project exclude paths
 /.gradle/
 /[01]_오브젝트와_의존관계/build/
-/[01]_오브젝트와_의존관계/out/production/classes/
+/[01]_오브젝트와_의존관계/out
+/[01]_오브젝트와_의존관계/
+/[01]_오브젝트와_의존관계/out/
