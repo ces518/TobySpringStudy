@@ -10,9 +10,7 @@ import me.june.spring.domain.User;
 public class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/spring_batch",
-            "root", "password");
+        Connection conn = getConnection();
 
         PreparedStatement ps = conn.prepareStatement(
             "insert into users (id, name, password) values (?, ?, ?)");
@@ -27,9 +25,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/spring_batch",
-            "root", "password");
+        Connection conn = getConnection();
 
         PreparedStatement ps = conn.prepareStatement(
             "select * from users where id = ?");
@@ -47,6 +43,12 @@ public class UserDao {
         ps.close();
         conn.close();
         return user;
+    }
+
+    private Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        return DriverManager.getConnection("jdbc:mysql://localhost/spring_batch",
+            "root", "password");
     }
 
     /**
