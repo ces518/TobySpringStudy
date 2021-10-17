@@ -8,7 +8,7 @@ import me.june.spring.infra.ConnectionMaker;
 public class DUserDao extends UserDao {
 
     public DUserDao(ConnectionMaker connectionMaker) {
-        super(connectionMaker);
+//        super(connectionMaker);
     }
 
 //    @Override
