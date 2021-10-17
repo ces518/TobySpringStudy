@@ -2,14 +2,11 @@ package me.june.spring.dao;
 
 import java.sql.SQLException;
 import me.june.spring.domain.User;
-import me.june.spring.infra.ConnectionMaker;
-import me.june.spring.infra.SimpleConnectionMaker;
 
 public class UserDaoTest {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        ConnectionMaker connectionMaker = new SimpleConnectionMaker();
-        UserDao dao = new UserDao(connectionMaker);
+        UserDao dao = new DaoFactory().userDao();
 
         User user = new User();
         user.setId("ncucu");
