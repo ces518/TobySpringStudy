@@ -12,7 +12,14 @@ public class UserDao {
 
     private ConnectionMaker connectionMaker;
 
+    public UserDao() {
+    }
+
     public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
+    }
+
+    public void setConnectionMaker(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
 
@@ -21,11 +28,11 @@ public class UserDao {
      * 주입과 검색의 차이는, 주입은 IoC 컨테이너가 의존관계에 있는 객체를 생성자 등을 통해 주입해 주지만
      * 검색의 경우에는 IoC 컨테이너에게 직접 요청한다.
      */
-    public UserDao() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-            DaoFactory.class);
-        this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
-    }
+//    public UserDao() {
+//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+//            DaoFactory.class);
+//        this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
+//    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection conn = connectionMaker.makeConnection();

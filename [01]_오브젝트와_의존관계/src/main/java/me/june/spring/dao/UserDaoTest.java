@@ -3,12 +3,15 @@ package me.june.spring.dao;
 import java.sql.SQLException;
 import me.june.spring.domain.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 public class UserDaoTest {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-            DaoFactory.class);
+        GenericXmlApplicationContext context = new GenericXmlApplicationContext(
+            "applicationContext.xml");
+//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+//            DaoFactory.class);
         UserDao dao = context.getBean("userDao", UserDao.class);
         UserDao dao2 = context.getBean("userDao", UserDao.class);
 
