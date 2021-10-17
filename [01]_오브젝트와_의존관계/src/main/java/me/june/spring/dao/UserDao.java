@@ -6,14 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import me.june.spring.domain.User;
 import me.june.spring.infra.ConnectionMaker;
-import me.june.spring.infra.SimpleConnectionMaker;
 
 public class UserDao {
 
     private ConnectionMaker connectionMaker;
 
-    public UserDao() {
-        connectionMaker = new SimpleConnectionMaker();
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
@@ -50,24 +49,5 @@ public class UserDao {
         ps.close();
         conn.close();
         return user;
-    }
-
-    /**
-     * Self-Test 용 Main 메소드
-     */
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDao();
-
-        User user = new User();
-        user.setId("ncucu");
-        user.setName("엔꾸꾸");
-        user.setPassword("패스워드");
-
-        dao.add(user);
-
-        System.out.println(user.getId() + "등록 성공");
-
-        User findUser = dao.get(user.getId());
-        System.out.println(findUser.getName());
     }
 }
