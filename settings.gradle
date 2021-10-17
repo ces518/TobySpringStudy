@@ -1,3 +1,4 @@
 rootProject.name = 'TobySpringStudy'
 include '[01]_오브젝트와_의존관계'
+include '[02]_테스트'
 
