@@ -17,19 +17,18 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
+//@ExtendWith(SpringExtension.class)
 /**
  * JUnit 은 ApplicationContext 를 캐싱해둔다
  * 이는 동일한 클래스에서만 적용되는것이 아닌, 클래스 간에도 적용됨
  */
-@ContextConfiguration(
-//    locations = "/applicationContext.xml" // xml 방식
-    classes = DaoFactory.class // JavaConfig 방식
-)
-@DirtiesContext // 테스트 메소드에서 애플리케이션 컨텍스트의 구성이 바뀜을 알린다. (애플리케이션 컨텍스트를 공유하지 않음)
+//@ContextConfiguration(
+////    locations = "/applicationContext.xml" // xml 방식
+//    classes = DaoFactory.class // JavaConfig 방식
+//)
+//@DirtiesContext // 테스트 메소드에서 애플리케이션 컨텍스트의 구성이 바뀜을 알린다. (애플리케이션 컨텍스트를 공유하지 않음)
 class UserDaoTest {
 
-    @Autowired
     private UserDao dao;
 
     private User user1;
@@ -43,6 +42,7 @@ class UserDaoTest {
 
     @BeforeEach
     void setUp() {
+        dao = new UserDao();
         // TestDI
         // SingleConnectionDataSource 는 커넥션을 하나만 만들어서 계속 사용하기 때문에 매우 빠르다.
         DataSource dataSource = new SingleConnectionDataSource(
