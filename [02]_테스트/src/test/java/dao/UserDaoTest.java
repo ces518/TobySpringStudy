@@ -5,13 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import domain.User;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -24,12 +26,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 //    locations = "/applicationContext.xml" // xml 방식
     classes = DaoFactory.class // JavaConfig 방식
 )
+@DirtiesContext // 테스트 메소드에서 애플리케이션 컨텍스트의 구성이 바뀜을 알린다. (애플리케이션 컨텍스트를 공유하지 않음)
 class UserDaoTest {
 
     @Autowired
-    private ApplicationContext context;
-
     private UserDao dao;
+
     private User user1;
     private User user2;
     private User user3;
@@ -41,12 +43,16 @@ class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-        dao = context.getBean("userDao", UserDao.class);
+        // TestDI
+        // SingleConnectionDataSource 는 커넥션을 하나만 만들어서 계속 사용하기 때문에 매우 빠르다.
+        DataSource dataSource = new SingleConnectionDataSource(
+            "jdbc:mysql://localhost/test", "root", "password", true);
+        dao.setDataSource(dataSource);
+
         user1 = new User("ncucu", "엔꾸꾸", "password");
         user2 = new User("ncucu1", "엔꾸꾸1", "password1");
         user3 = new User("ncucu2", "엔꾸꾸2", "password2");
 
-        System.out.println(this.context); // applicationContext 의 주소는 동일하지만, testClass 인스턴스는 매번 바뀐다.
         System.out.println(this);
     }
 
