@@ -5,17 +5,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import domain.User;
 import java.sql.SQLException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 class UserDaoTest {
 
-    @Test
-    void addAndGet() throws Exception {
+    private UserDao dao;
+
+    @BeforeEach
+    void setUp() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
             DaoFactory.class);
-        UserDao dao = context.getBean("userDao", UserDao.class);
+        dao = context.getBean("userDao", UserDao.class);
+    }
+
+    @Test
+    void addAndGet() throws Exception {
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
@@ -35,9 +42,6 @@ class UserDaoTest {
 
     @Test
     void getUserFailure() throws SQLException {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-            DaoFactory.class);
-        UserDao dao = context.getBean("userDao", UserDao.class);
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
@@ -46,10 +50,6 @@ class UserDaoTest {
 
     @Test
     void count() throws Exception {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-            DaoFactory.class);
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
         User user1 = new User("ncucu", "엔꾸꾸", "password");
         User user2 = new User("ncucu1", "엔꾸꾸1", "password1");
         User user3 = new User("ncucu2", "엔꾸꾸2", "password2");
