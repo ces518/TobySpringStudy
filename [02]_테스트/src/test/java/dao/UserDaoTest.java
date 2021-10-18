@@ -13,21 +13,24 @@ import org.springframework.dao.EmptyResultDataAccessException;
 class UserDaoTest {
 
     private UserDao dao;
+    private User user1;
+    private User user2;
+    private User user3;
 
     @BeforeEach
     void setUp() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
             DaoFactory.class);
         dao = context.getBean("userDao", UserDao.class);
+        user1 = new User("ncucu", "엔꾸꾸", "password");
+        user2 = new User("ncucu1", "엔꾸꾸1", "password1");
+        user3 = new User("ncucu2", "엔꾸꾸2", "password2");
     }
 
     @Test
     void addAndGet() throws Exception {
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
-
-        User user1 = new User("ncucu", "엔꾸꾸", "password");
-        User user2 = new User("ncucu1", "엔꾸꾸1", "password1");
 
         dao.add(user1);
         dao.add(user2);
@@ -50,10 +53,6 @@ class UserDaoTest {
 
     @Test
     void count() throws Exception {
-        User user1 = new User("ncucu", "엔꾸꾸", "password");
-        User user2 = new User("ncucu1", "엔꾸꾸1", "password1");
-        User user3 = new User("ncucu2", "엔꾸꾸2", "password2");
-
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
 
