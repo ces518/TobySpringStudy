@@ -21,7 +21,7 @@ public class UserDao {
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
         // 익명 클래스로 개선
-        StatementStrategy stmt = new StatementStrategy() {
+        jdbcContextWithStatementStrategy(new StatementStrategy() {
 
             @Override
             public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
@@ -32,8 +32,7 @@ public class UserDao {
                 ps.setString(3, user.getPassword());
                 return ps;
             }
-        };
-        jdbcContextWithStatementStrategy(stmt);
+        });
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
@@ -67,7 +66,7 @@ public class UserDao {
                     e.printStackTrace();
                 }
             }
-            if (ps != null ){
+            if (ps != null) {
                 try {
                     ps.close();
                 } catch (SQLException e) {
@@ -83,7 +82,6 @@ public class UserDao {
             }
         }
 
-
         if (user == null) {
             throw new EmptyResultDataAccessException(1);
         }
@@ -92,8 +90,15 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy st = new DeleteAllStatement();
-        jdbcContextWithStatementStrategy(st);
+        jdbcContextWithStatementStrategy(
+            new StatementStrategy() {
+
+                @Override
+                public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                    return c.prepareStatement("delete from users");
+                }
+            }
+        );
     }
 
     public int getCount() throws SQLException {
