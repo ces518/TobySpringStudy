@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-public abstract class UserDao {
+public class UserDao {
 
     private DataSource dataSource;
 
@@ -20,18 +20,8 @@ public abstract class UserDao {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection conn = dataSource.getConnection();
-
-        PreparedStatement ps = conn.prepareStatement(
-            "insert into users (id, name, password) values (?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        conn.close();
+        StatementStrategy stmt = new AddStatement(user);
+        jdbcContextWithStatementStrategy(stmt);
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
@@ -110,7 +100,9 @@ public abstract class UserDao {
         return count;
     }
 
-    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
+    protected PreparedStatement makeStatement(Connection c) throws SQLException {
+        return null;
+    }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
         Connection conn = null;
