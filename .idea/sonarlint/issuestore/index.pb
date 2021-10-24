@@ -21,8 +21,6 @@ a[01]_오브젝트와_의존관계/src/main/java/me/june/spring/infra/CountingCo
 Z[01]_오브젝트와_의존관계/src/main/java/me/june/spring/dao/CountingDaoFactory.java,e/2/e2ceb07d38059eea459db8b79c6ff8788cd7e81b
 �
 e[01]_오브젝트와_의존관계/src/main/java/me/june/spring/dao/UserDaoConnectionCountingTest.java,f/d/fdfdbc4304de4bf4c27abf57e7b3d8700f9bfc0b
-�
-S[01]_오브젝트와_의존관계/src/main/java/me/june/spring/dao/UserDaoTest.java,f/3/f337c5991c3229951ef36d63e259624ad8a5aec3
 
 O[01]_오브젝트와_의존관계/src/main/java/me/june/spring/dao/UserDao.java,b/6/b6c5fdb2bc44c0562959ed5d01056d031ca0bd7b
 �
@@ -32,8 +30,6 @@ P[01]_오브젝트와_의존관계/src/main/java/me/june/spring/dao/NUserDao.jav
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-?
-settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233
 h
 8[02]_테스트/src/main/java/infra/DConnectionMaker.java,4/5/45689fefee0415d426829f9dfd0c9b1a12224d1c
 h
@@ -42,3 +38,5 @@ m
 =[02]_테스트/src/main/java/infra/SimpleConnectionMaker.java,0/d/0da70ccc591b6264b5cbba3d6c4ec05e5433874b
 ]
 -[02]_테스트/src/main/java/domain/User.java,d/d/dd4ac43cf75fcb8f434b0fbac48dcd3655b99501
+�
+R[01]_오브젝트와_의존관계/src/main/java/me/june/spring/dao/DaoFactory.java,3/b/3b76d166cdf3c60f7296d45f4036664818074bcc

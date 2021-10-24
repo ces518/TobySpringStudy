@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
@@ -12,6 +13,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/[01]_오브젝트와_의존관계" />
+            <option value="$PROJECT_DIR$/[02]_테스트" />
+            <option value="$PROJECT_DIR$/[03]_템플릿" />
           </set>
         </option>
       </GradleProjectSettings>
