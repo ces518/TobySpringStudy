@@ -15,6 +15,15 @@ public class UserDao {
     public UserDao() {
     }
 
+    /**
+     * 수동 DI 방식
+     */
+    public void setDataSource(DataSource dataSource) {
+        JdbcContext jdbcContext = new JdbcContext();
+        jdbcContext.setDataSource(dataSource);
+        this.jdbcContext = jdbcContext;
+    }
+
     public void setJdbcContext(JdbcContext jdbcContext) {
         this.jdbcContext = jdbcContext;
     }
