@@ -90,15 +90,36 @@ public abstract class UserDao {
     }
 
     public void deleteAll() throws SQLException {
+        StatementStrategy st = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(st);
+    }
+
+    public int getCount() throws SQLException {
+        Connection conn = dataSource.getConnection();
+        PreparedStatement ps = conn.prepareStatement("select count(*) from users");
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+
+        int count = rs.getInt(1);
+
+        rs.close();
+        ps.close();
+        conn.close();
+
+        return count;
+    }
+
+    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             conn = dataSource.getConnection();
 
-            // 변하는것과 변하지 않는것의 분리.
-            // deleteAll 에서 변하는것 ? -> DELETE Query 에 해당하는 Statement 생성
-            // 나머지 부분 (커넥션을 맺고, 쿼리를 실행하고, 예외 처리및 자원 회수는 변하지 않는다.
-            ps = new DeleteAllStatement().makePreparedStatement(conn);
+            // 전략패턴 적용
+            ps = stmt.makePreparedStatement(conn);
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -121,22 +142,4 @@ public abstract class UserDao {
             }
         }
     }
-
-    public int getCount() throws SQLException {
-        Connection conn = dataSource.getConnection();
-        PreparedStatement ps = conn.prepareStatement("select count(*) from users");
-
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-
-        int count = rs.getInt(1);
-
-        rs.close();
-        ps.close();
-        conn.close();
-
-        return count;
-    }
-
-    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
 }
