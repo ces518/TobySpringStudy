@@ -20,9 +20,8 @@ public class UserDao {
     }
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
-        // 로컬 클래스로 개선
-        // 로컬 클래스는 메소드 인자에 대한 참조에 접근할 수 있다.
-        class AddStatement implements StatementStrategy {
+        // 익명 클래스로 개선
+        StatementStrategy stmt = new StatementStrategy() {
 
             @Override
             public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
@@ -33,9 +32,7 @@ public class UserDao {
                 ps.setString(3, user.getPassword());
                 return ps;
             }
-        }
-
-        StatementStrategy stmt = new AddStatement();
+        };
         jdbcContextWithStatementStrategy(stmt);
     }
 
