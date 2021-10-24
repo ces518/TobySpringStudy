@@ -10,18 +10,18 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 public class UserDao {
 
-    private DataSource dataSource;
+    private JdbcContext jdbcContext;
 
     public UserDao() {
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public void setJdbcContext(JdbcContext jdbcContext) {
+        this.jdbcContext = jdbcContext;
     }
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
         // 익명 클래스로 개선
-        jdbcContextWithStatementStrategy(new StatementStrategy() {
+        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 
             @Override
             public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
@@ -36,61 +36,61 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+//        Connection conn = null;
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//
+//        User user = null;
+//        try {
+//            conn = dataSource.getConnection();
+//            ps = conn.prepareStatement(
+//                "select * from users where id = ?");
+//            ps.setString(1, id);
+//
+//            rs = ps.executeQuery();
+//
+//            user = null;
+//            if (rs.next()) {
+//                user = new User();
+//                user.setId(rs.getString("id"));
+//                user.setName(rs.getString("name"));
+//                user.setPassword(rs.getString("password"));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (rs != null) {
+//                try {
+//                    rs.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if (ps != null) {
+//                try {
+//                    ps.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if (conn != null) {
+//                try {
+//                    conn.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//        if (user == null) {
+//            throw new EmptyResultDataAccessException(1);
+//        }
 
-        User user = null;
-        try {
-            conn = dataSource.getConnection();
-            ps = conn.prepareStatement(
-                "select * from users where id = ?");
-            ps.setString(1, id);
-
-            rs = ps.executeQuery();
-
-            user = null;
-            if (rs.next()) {
-                user = new User();
-                user.setId(rs.getString("id"));
-                user.setName(rs.getString("name"));
-                user.setPassword(rs.getString("password"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        if (user == null) {
-            throw new EmptyResultDataAccessException(1);
-        }
-
-        return user;
+        return null;
     }
 
     public void deleteAll() throws SQLException {
-        jdbcContextWithStatementStrategy(
+        jdbcContext.workWithStatementStrategy(
             new StatementStrategy() {
 
                 @Override
@@ -102,53 +102,22 @@ public class UserDao {
     }
 
     public int getCount() throws SQLException {
-        Connection conn = dataSource.getConnection();
-        PreparedStatement ps = conn.prepareStatement("select count(*) from users");
+//        Connection conn = dataSource.getConnection();
+//        PreparedStatement ps = conn.prepareStatement("select count(*) from users");
+//
+//        ResultSet rs = ps.executeQuery();
+//        rs.next();
+//
+//        int count = rs.getInt(1);
+//
+//        rs.close();
+//        ps.close();
+//        conn.close();
 
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-
-        int count = rs.getInt(1);
-
-        rs.close();
-        ps.close();
-        conn.close();
-
-        return count;
+        return 0;
     }
 
     protected PreparedStatement makeStatement(Connection c) throws SQLException {
         return null;
-    }
-
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = dataSource.getConnection();
-
-            // 전략패턴 적용
-            ps = stmt.makePreparedStatement(conn);
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }
