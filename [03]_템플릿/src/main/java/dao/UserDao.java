@@ -89,18 +89,8 @@ public class UserDao {
     }
 
     public int getCount() throws SQLException {
-        return jdbcTemplate.query(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                return con.prepareStatement("select count(*) from users");
-            }
-        }, new ResultSetExtractor<Integer>() {
-            @Override
-            public Integer extractData(ResultSet rs) throws SQLException, DataAccessException {
-                rs.next();
-                return rs.getInt(1);
-            }
-        });
+        // queryForInt 는 Deprecated 됨
+        return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
     }
 
     protected PreparedStatement makeStatement(Connection c) throws SQLException {
