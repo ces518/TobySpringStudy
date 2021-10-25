@@ -3,14 +3,14 @@ package dao;
 import domain.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 
 public class UserDao {
 
-    private JdbcContext jdbcContext;
+    private JdbcTemplate jdbcTemplate;
 
     public UserDao() {
     }
@@ -19,29 +19,23 @@ public class UserDao {
      * 수동 DI 방식
      */
     public void setDataSource(DataSource dataSource) {
-        JdbcContext jdbcContext = new JdbcContext();
-        jdbcContext.setDataSource(dataSource);
-        this.jdbcContext = jdbcContext;
-    }
-
-    public void setJdbcContext(JdbcContext jdbcContext) {
-        this.jdbcContext = jdbcContext;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
         // 익명 클래스로 개선
-        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement(
-                    "insert into users (id, name, password) values (?, ?, ?)");
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
-                return ps;
-            }
-        });
+//        jdbcTemplate.workWithStatementStrategy(new StatementStrategy() {
+//
+//            @Override
+//            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+//                PreparedStatement ps = c.prepareStatement(
+//                    "insert into users (id, name, password) values (?, ?, ?)");
+//                ps.setString(1, user.getId());
+//                ps.setString(2, user.getName());
+//                ps.setString(3, user.getPassword());
+//                return ps;
+//            }
+//        });
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
@@ -99,7 +93,13 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        jdbcContext.executeSql("delete from users");
+        jdbcTemplate.update(new PreparedStatementCreator() {
+
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                return con.prepareStatement("delete from users");
+            }
+        });
     }
 
     public int getCount() throws SQLException {
