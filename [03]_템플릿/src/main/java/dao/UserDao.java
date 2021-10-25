@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -47,6 +48,11 @@ public class UserDao {
     public int getCount() throws SQLException {
         // queryForInt 는 Deprecated 됨
         return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    public List<User> getAll() {
+        return jdbcTemplate.query("select * from users order by id",
+            new BeanPropertyRowMapper<>(User.class));
     }
 
     protected PreparedStatement makeStatement(Connection c) throws SQLException {
