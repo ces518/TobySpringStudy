@@ -14,10 +14,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 
 class UserDaoTest {
 
     private UserDao dao;
+    private DataSource dataSource;
 
     private User user1;
     private User user2;
@@ -35,6 +37,7 @@ class UserDaoTest {
         // SingleConnectionDataSource 는 커넥션을 하나만 만들어서 계속 사용하기 때문에 매우 빠르다.
         DataSource dataSource = new SingleConnectionDataSource(
             "jdbc:mysql://localhost/test", "root", "password", true);
+        this.dataSource = dataSource;
         dao.setDataSource(dataSource);
         this.dao = dao;
 
@@ -116,6 +119,20 @@ class UserDaoTest {
         assertThat(dao.getAll().size()).isEqualTo(1);
 
         assertThrows(DuplicateKeyException.class, () -> dao.add(user1));
+    }
+
+    @Test
+    void sqlExceptionTranslate() throws Exception {
+        dao.deleteAll();
+
+        try {
+            dao.add(user1);
+            dao.add(user1);
+        } catch (DuplicateKeyException e) {
+            SQLException sqlEx = (SQLException) e.getRootCause();
+            SQLErrorCodeSQLExceptionTranslator translator = new SQLErrorCodeSQLExceptionTranslator(dataSource);
+            assertThat(translator.translate(null, null, sqlEx)).isInstanceOf(DuplicateKeyException.class);
+        }
     }
 
     private void checkSameUser(User user1, User user2) {
