@@ -3,7 +3,6 @@ package template;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import template.BufferedReaderCallback;
 
 public class Calculator {
 
@@ -20,7 +19,8 @@ public class Calculator {
 //                return sum;
 //            }
 //        });
-        return lineReadTemplate(path, new LineCallback() {
+        return lineReadTemplate(path, new LineCallback<Integer>() {
+
             @Override
             public Integer doSomethingWithLine(String line, Integer value) {
                 return value + Integer.valueOf(line);
@@ -41,12 +41,22 @@ public class Calculator {
 //                return result;
 //            }
 //        });
-        return lineReadTemplate(path, new LineCallback() {
+        return lineReadTemplate(path, new LineCallback<Integer>() {
+
             @Override
             public Integer doSomethingWithLine(String line, Integer value) {
                 return value * Integer.valueOf(line);
             }
         }, 1);
+    }
+
+    public String concatenate(String filePath) throws IOException {
+        return lineReadTemplate(filePath, new LineCallback<String>() {
+            @Override
+            public String doSomethingWithLine(String line, String value) {
+                return value + line;
+            }
+        }, "");
     }
 
     public Integer fileReadTemplate(String filePath, BufferedReaderCallback callback)
@@ -69,11 +79,11 @@ public class Calculator {
         }
     }
 
-    public Integer lineReadTemplate(String filePath, LineCallback callback, int initVal) throws IOException {
+    public <T> T lineReadTemplate(String filePath, LineCallback<T> callback, T initVal) throws IOException {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(filePath));
-            Integer result = initVal;
+            T result = initVal;
             String line = null;
             while ((line = br.readLine()) != null) {
                 result = callback.doSomethingWithLine(line, result);
