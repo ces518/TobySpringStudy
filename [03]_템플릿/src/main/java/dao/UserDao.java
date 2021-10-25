@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 
 public class UserDao {
 
@@ -31,57 +32,17 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-//        Connection conn = null;
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
-//
-//        User user = null;
-//        try {
-//            conn = dataSource.getConnection();
-//            ps = conn.prepareStatement(
-//                "select * from users where id = ?");
-//            ps.setString(1, id);
-//
-//            rs = ps.executeQuery();
-//
-//            user = null;
-//            if (rs.next()) {
-//                user = new User();
-//                user.setId(rs.getString("id"));
-//                user.setName(rs.getString("name"));
-//                user.setPassword(rs.getString("password"));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (rs != null) {
-//                try {
-//                    rs.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            if (ps != null) {
-//                try {
-//                    ps.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            if (conn != null) {
-//                try {
-//                    conn.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        if (user == null) {
-//            throw new EmptyResultDataAccessException(1);
-//        }
+        return jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, new RowMapper<User>() {
 
-        return null;
+            @Override
+            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                User user = new User();
+                user.setId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setPassword(rs.getString("password"));
+                return user;
+            }
+        });
     }
 
     public void deleteAll() throws SQLException {
