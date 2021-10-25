@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
@@ -103,6 +105,17 @@ class UserDaoTest {
         checkSameUser(user1, users3.get(0));
         checkSameUser(user2, users3.get(1));
         checkSameUser(user3, users3.get(2));
+    }
+
+    @Test
+    void duplicateKey() throws Exception {
+        dao.deleteAll();
+
+        assertThat(dao.getAll().size()).isEqualTo(0);
+        dao.add(user1);
+        assertThat(dao.getAll().size()).isEqualTo(1);
+
+        assertThrows(DuplicateKeyException.class, () -> dao.add(user1));
     }
 
     private void checkSameUser(User user1, User user2) {
