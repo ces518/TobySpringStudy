@@ -32,7 +32,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        return jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, new RowMapper<User>() {
+        return jdbcTemplate.queryForObject("select * from users where id = ?", new RowMapper<User>() {
 
             @Override
             public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -42,7 +42,7 @@ public class UserDao {
                 user.setPassword(rs.getString("password"));
                 return user;
             }
-        });
+        }, id);
     }
 
     public void deleteAll() throws SQLException {
