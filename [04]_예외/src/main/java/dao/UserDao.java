@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -23,7 +24,7 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void add(final User user) {
+    public void add(final User user) throws DuplicateKeyException {
         jdbcTemplate.update("insert into users(id, name, password) values (?, ?, ?)",
             user.getId(), user.getName(), user.getPassword());
     }
