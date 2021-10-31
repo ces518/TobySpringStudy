@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
@@ -37,6 +38,9 @@ class UserServiceTest {
 
     @Autowired
     UserLevelUpgradePolicy policy;
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
 
     List<User> users;
 
@@ -101,6 +105,7 @@ class UserServiceTest {
         service.setUserDao(this.userDao);
         service.setUserLevelUpgradePolicy(this.policy);
         service.setDataSource(this.dataSource);
+        service.setTransactionManager(this.transactionManager);
         try {
             service.upgradeLevels();
             fail("TestUserServiceException expected"); // 예외가 발생하지 않는다면 실패

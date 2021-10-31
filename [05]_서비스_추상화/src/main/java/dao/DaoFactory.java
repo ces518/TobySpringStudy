@@ -5,7 +5,9 @@ import domain.UserLevelUpgradePolicy;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 import service.UserService;
 
 @Configuration
@@ -34,11 +36,17 @@ public class DaoFactory {
         userService.setUserDao(userDao());
         userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
         userService.setDataSource(dataSource());
+        userService.setTransactionManager(transactionManager());
         return userService;
     }
 
     @Bean
     public UserLevelUpgradePolicy userLevelUpgradePolicy() {
         return new DefaultUserLevelUpgradePolicy();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(dataSource());
     }
 }
