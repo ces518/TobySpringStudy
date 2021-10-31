@@ -7,9 +7,12 @@ import static org.assertj.core.api.Assertions.fail;
 
 import dao.DaoFactory;
 import dao.UserDao;
+import domain.DefaultUserLevelUpgradePolicy;
 import domain.Level;
 import domain.User;
+import domain.UserLevelUpgradePolicy;
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +31,12 @@ class UserServiceTest {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    UserLevelUpgradePolicy policy;
 
     List<User> users;
 
@@ -90,6 +99,8 @@ class UserServiceTest {
 
         TestUserService service = new TestUserService(users.get(3).getId());
         service.setUserDao(this.userDao);
+        service.setUserLevelUpgradePolicy(this.policy);
+        service.setDataSource(this.dataSource);
         try {
             service.upgradeLevels();
             fail("TestUserServiceException expected"); // 예외가 발생하지 않는다면 실패
