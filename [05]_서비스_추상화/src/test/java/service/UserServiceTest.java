@@ -2,6 +2,8 @@ package service;
 
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static service.UserService.MIN_LOGIN_COUNT_FOR_SILVER;
+import static service.UserService.MIN_RECOMMEND_FOR_GOLD;
 
 import dao.DaoFactory;
 import dao.UserDao;
@@ -33,10 +35,10 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         users = List.of(
-            new User("ncucu", "엔꾸꾸", "p", Level.BASIC, 49, 0),
-            new User("ncucu1", "엔꾸꾸1", "p1", Level.BASIC, 50, 0),
-            new User("ncucu2", "엔꾸꾸2", "p2", Level.SILVER, 60, 29),
-            new User("ncucu3", "엔꾸꾸3", "p3", Level.SILVER, 60, 30),
+            new User("ncucu", "엔꾸꾸", "p", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER - 1, 0),
+            new User("ncucu1", "엔꾸꾸1", "p1", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
+            new User("ncucu2", "엔꾸꾸2", "p2", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD - 1),
+            new User("ncucu3", "엔꾸꾸3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
             new User("ncucu4", "엔꾸꾸4", "p4", Level.GOLD, 100, 100)
         );
     }
