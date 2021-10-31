@@ -54,11 +54,11 @@ class UserServiceTest {
         }
         userService.upgradeLevels();
 
-        checkLevel(users.get(0), Level.BASIC);
-        checkLevel(users.get(1), Level.SILVER);
-        checkLevel(users.get(2), Level.SILVER);
-        checkLevel(users.get(3), Level.GOLD);
-        checkLevel(users.get(4), Level.GOLD);
+        checkLevel(users.get(0), false);
+        checkLevel(users.get(1), true);
+        checkLevel(users.get(2), false);
+        checkLevel(users.get(3), true);
+        checkLevel(users.get(4), false);
     }
 
     @Test
@@ -80,8 +80,14 @@ class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel()).isEqualTo(Level.BASIC);
     }
 
-    private void checkLevel(User user, Level expectedLevel) {
+    /**
+     * 테스트의 의도를 분명히 드러내도록 변경
+     * 기존의 Level 을 인자로 받는 테스트는, 의도를 파악하기가 힘든 감이 있었다.
+     * upgrade 여부를 인자로 받고, Level 객체를 통해 기대하는 Level 값을 가져오도록 변경한다.
+     */
+    private void checkLevel(User user, boolean upgraded) {
         User updatedUser = userDao.get(user.getId());
+        Level expectedLevel = upgraded ? user.getLevel().nextLevel() : user.getLevel();
         assertThat(updatedUser.getLevel()).isEqualTo(expectedLevel);
     }
 }
