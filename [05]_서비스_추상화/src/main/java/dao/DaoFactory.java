@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import service.UserService;
 
 @Configuration
 public class DaoFactory {
@@ -16,13 +17,6 @@ public class DaoFactory {
     }
 
     @Bean
-    public JdbcContext jdbcContext() {
-        JdbcContext jdbcContext = new JdbcContext();
-        jdbcContext.setDataSource(dataSource());
-        return jdbcContext;
-    }
-
-    @Bean
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
@@ -30,5 +24,12 @@ public class DaoFactory {
         dataSource.setUsername("root");
         dataSource.setPassword("password");
         return dataSource;
+    }
+
+    @Bean
+    public UserService userService() {
+        UserService userService = new UserService();
+        userService.setUserDao(userDao());
+        return userService;
     }
 }
