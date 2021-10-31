@@ -3,6 +3,7 @@ package service;
 import static domain.DefaultUserLevelUpgradePolicy.MIN_LOGIN_COUNT_FOR_SILVER;
 import static domain.DefaultUserLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import dao.DaoFactory;
 import dao.UserDao;
@@ -80,6 +81,22 @@ class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel()).isEqualTo(Level.BASIC);
     }
 
+    @Test
+    void upgradeAllOrNothing() throws Exception {
+        userDao.deleteAll();
+        for (User user : users) {
+            userDao.add(user);
+        }
+
+        TestUserService service = new TestUserService(users.get(3).getId());
+        service.setUserDao(this.userDao);
+        try {
+            service.upgradeLevels();
+            fail("TestUserServiceException expected"); // 예외가 발생하지 않는다면 실패
+        } catch (TestUserServiceException ignored) {}
+        checkLevel(users.get(1), false);
+    }
+
     /**
      * 테스트의 의도를 분명히 드러내도록 변경 기존의 Level 을 인자로 받는 테스트는, 의도를 파악하기가 힘든 감이 있었다. upgrade 여부를 인자로 받고, Level
      * 객체를 통해 기대하는 Level 값을 가져오도록 변경한다.
@@ -89,4 +106,23 @@ class UserServiceTest {
         Level expectedLevel = upgraded ? user.getLevel().nextLevel() : user.getLevel();
         assertThat(updatedUser.getLevel()).isEqualTo(expectedLevel);
     }
+
+    // 테스트용 UserService
+    static class TestUserService extends UserService {
+        private String id;
+
+        public TestUserService(String id) {
+            this.id = id;
+        }
+
+        @Override
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) {
+                throw new TestUserServiceException();
+            }
+            super.upgradeLevel(user);
+        }
+    }
+
+    static class TestUserServiceException extends RuntimeException {}
 }

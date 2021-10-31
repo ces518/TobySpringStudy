@@ -40,7 +40,7 @@ public class UserService {
         return policy.canUpgradeLevel(user);
     }
 
-    private void upgradeLevel(User user) {
+    protected void upgradeLevel(User user) {
         policy.upgradeLevel(user);
         userDao.update(user);
     }
