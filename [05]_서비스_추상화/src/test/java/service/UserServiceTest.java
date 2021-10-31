@@ -13,10 +13,12 @@ import domain.User;
 import domain.UserLevelUpgradePolicy;
 import java.util.List;
 import javax.sql.DataSource;
+import mail.DummyMailSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -42,10 +44,14 @@ class UserServiceTest {
     @Autowired
     PlatformTransactionManager transactionManager;
 
+    MailSender mailSender;
+
     List<User> users;
 
     @BeforeEach
     void setUp() {
+        mailSender = new DummyMailSender();
+        userService.setMailSender(mailSender);
         users = List.of(
             new User("ncucu", "엔꾸꾸", "p", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER - 1, 0),
             new User("ncucu1", "엔꾸꾸1", "p1", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
@@ -106,6 +112,7 @@ class UserServiceTest {
         service.setUserLevelUpgradePolicy(this.policy);
         service.setDataSource(this.dataSource);
         service.setTransactionManager(this.transactionManager);
+        service.setMailSender(this.mailSender);
         try {
             service.upgradeLevels();
             fail("TestUserServiceException expected"); // 예외가 발생하지 않는다면 실패
