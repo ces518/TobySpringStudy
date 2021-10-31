@@ -8,7 +8,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionSynchronizationUtils;
 
@@ -33,11 +37,12 @@ public class UserService {
     }
 
     public void upgradeLevels() {
-        TransactionSynchronizationManager.initSynchronization();
-        Connection c = DataSourceUtils.getConnection(dataSource);
-        try {
-            c.setAutoCommit(false);
+        PlatformTransactionManager transactionManager =
+            new DataSourceTransactionManager(dataSource);
 
+        // 트랜잭션 시작
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
             List<User> users = userDao.getAll();
             for (User user : users) {
                 if (canUpgradeLevel(user)) {
@@ -45,22 +50,12 @@ public class UserService {
                 }
             }
 
-            c.commit();
-        } catch (Exception e) {
-            try {
-                c.rollback();
-            } catch (SQLException ex) {
-            }
-            try {
-                throw e;
-            } catch (SQLException ex) {
-            }
-        } finally {
-            DataSourceUtils.releaseConnection(c, dataSource);
-            TransactionSynchronizationManager.unbindResource(dataSource);
-            TransactionSynchronizationManager.clearSynchronization();
+            // 트랜잭션 커밋
+            transactionManager.commit(status);
+        } catch (RuntimeException e) {
+            transactionManager.rollback(status);
+            throw e;
         }
-
     }
 
     public void add(User user) {
