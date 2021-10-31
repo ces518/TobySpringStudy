@@ -1,5 +1,7 @@
 package dao;
 
+import domain.DefaultUserLevelUpgradePolicy;
+import domain.UserLevelUpgradePolicy;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,12 @@ public class DaoFactory {
     public UserService userService() {
         UserService userService = new UserService();
         userService.setUserDao(userDao());
+        userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
         return userService;
+    }
+
+    @Bean
+    public UserLevelUpgradePolicy userLevelUpgradePolicy() {
+        return new DefaultUserLevelUpgradePolicy();
     }
 }

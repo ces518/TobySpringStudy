@@ -1,15 +1,13 @@
 package service;
 
-import static org.assertj.core.api.Assertions.as;
+import static domain.DefaultUserLevelUpgradePolicy.MIN_LOGIN_COUNT_FOR_SILVER;
+import static domain.DefaultUserLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
-import static service.UserService.MIN_LOGIN_COUNT_FOR_SILVER;
-import static service.UserService.MIN_RECOMMEND_FOR_GOLD;
 
 import dao.DaoFactory;
 import dao.UserDao;
 import domain.Level;
 import domain.User;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,9 +81,8 @@ class UserServiceTest {
     }
 
     /**
-     * 테스트의 의도를 분명히 드러내도록 변경
-     * 기존의 Level 을 인자로 받는 테스트는, 의도를 파악하기가 힘든 감이 있었다.
-     * upgrade 여부를 인자로 받고, Level 객체를 통해 기대하는 Level 값을 가져오도록 변경한다.
+     * 테스트의 의도를 분명히 드러내도록 변경 기존의 Level 을 인자로 받는 테스트는, 의도를 파악하기가 힘든 감이 있었다. upgrade 여부를 인자로 받고, Level
+     * 객체를 통해 기대하는 Level 값을 가져오도록 변경한다.
      */
     private void checkLevel(User user, boolean upgraded) {
         User updatedUser = userDao.get(user.getId());
