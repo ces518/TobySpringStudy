@@ -11,6 +11,7 @@ import domain.DefaultUserLevelUpgradePolicy;
 import domain.Level;
 import domain.User;
 import domain.UserLevelUpgradePolicy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import mail.DummyMailSender;
@@ -18,7 +19,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -27,6 +31,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @ContextConfiguration(
     classes = DaoFactory.class
 )
+@DirtiesContext
 class UserServiceTest {
 
     @Autowired
@@ -72,6 +77,8 @@ class UserServiceTest {
         for (User user : users) {
             userDao.add(user);
         }
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
         userService.upgradeLevels();
 
         checkLevel(users.get(0), false);
@@ -79,6 +86,11 @@ class UserServiceTest {
         checkLevel(users.get(2), false);
         checkLevel(users.get(3), true);
         checkLevel(users.get(4), false);
+
+        List<String> request = mockMailSender.getRequests();
+        assertThat(request.size()).isEqualTo(2);
+        assertThat(request.get(0)).isEqualTo(users.get(1).getEmail());
+        assertThat(request.get(1)).isEqualTo(users.get(3).getEmail());
     }
 
     @Test
@@ -148,4 +160,21 @@ class UserServiceTest {
     }
 
     static class TestUserServiceException extends RuntimeException {}
+
+    static class MockMailSender implements MailSender {
+        private List<String> requests = new ArrayList<>();
+
+        public List<String> getRequests() {
+            return requests;
+        }
+
+        @Override
+        public void send(SimpleMailMessage simpleMessage) throws MailException {
+            requests.add(simpleMessage.getTo()[0]);
+        }
+
+        @Override
+        public void send(SimpleMailMessage... simpleMessages) throws MailException {
+        }
+    }
 }
