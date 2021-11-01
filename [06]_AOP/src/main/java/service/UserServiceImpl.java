@@ -54,20 +54,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void upgradeLevels() {
-        // 트랜잭션 시작
-        TransactionStatus status = transactionManager.getTransaction(
-            new DefaultTransactionDefinition());
-        try {
-            upgradeLevelsInternal();
-            // 트랜잭션 커밋
-            transactionManager.commit(status);
-        } catch (RuntimeException e) {
-            transactionManager.rollback(status);
-            throw e;
-        }
-    }
-
-    private void upgradeLevelsInternal() {
         List<User> users = userDao.getAll();
         for (User user : users) {
             if (canUpgradeLevel(user)) {

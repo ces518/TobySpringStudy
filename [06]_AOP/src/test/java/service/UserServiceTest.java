@@ -74,24 +74,31 @@ class UserServiceTest {
 
     @Test
     void upgradeLevels() {
-        userDao.deleteAll();
-        for (User user : users) {
-            userDao.add(user);
-        }
-        MockMailSender mockMailSender = new MockMailSender();
-        userServiceImpl.setMailSender(mockMailSender);
-        userServiceImpl.upgradeLevels();
+        UserServiceImpl userService = new UserServiceImpl();
 
-        checkLevel(users.get(0), false);
-        checkLevel(users.get(1), true);
-        checkLevel(users.get(2), false);
-        checkLevel(users.get(3), true);
-        checkLevel(users.get(4), false);
+        MockUserDao mockUserDao = new MockUserDao(users);
+        userService.setUserDao(mockUserDao);
+        userService.setUserLevelUpgradePolicy(policy);
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
+
+        userService.upgradeLevels();
+
+        List<User> updated = mockUserDao.getUpdated();
+        assertThat(updated.size()).isEqualTo(2);
+        checkUserAndLevel(updated.get(0), "ncucu1", Level.SILVER);
+        checkUserAndLevel(updated.get(1), "ncucu3", Level.GOLD);
 
         List<String> request = mockMailSender.getRequests();
         assertThat(request.size()).isEqualTo(2);
         assertThat(request.get(0)).isEqualTo(users.get(1).getEmail());
         assertThat(request.get(1)).isEqualTo(users.get(3).getEmail());
+    }
+
+    private void checkUserAndLevel(User updated, String expected, Level expectedLevel) {
+        assertThat(updated.getId()).isEqualTo(expected);
+        assertThat(updated.getLevel()).isEqualTo(expectedLevel);
     }
 
     @Test
@@ -129,7 +136,8 @@ class UserServiceTest {
         try {
             service.upgradeLevels();
             fail("TestUserServiceException expected"); // 예외가 발생하지 않는다면 실패
-        } catch (TestUserServiceException ignored) {}
+        } catch (TestUserServiceException ignored) {
+        }
         checkLevel(users.get(1), false);
     }
 
@@ -145,6 +153,7 @@ class UserServiceTest {
 
     // 테스트용 UserService
     static class TestUserService extends UserServiceImpl {
+
         private String id;
 
         public TestUserService(String id) {
@@ -160,9 +169,12 @@ class UserServiceTest {
         }
     }
 
-    static class TestUserServiceException extends RuntimeException {}
+    static class TestUserServiceException extends RuntimeException {
+
+    }
 
     static class MockMailSender implements MailSender {
+
         private List<String> requests = new ArrayList<>();
 
         public List<String> getRequests() {
@@ -177,5 +189,57 @@ class UserServiceTest {
         @Override
         public void send(SimpleMailMessage... simpleMessages) throws MailException {
         }
+    }
+
+    static class MockUserDao implements UserDao {
+
+        private List<User> users;
+        private List<User> updated = new ArrayList<>();
+
+        public MockUserDao(List<User> users) {
+            this.users = users;
+        }
+
+        /**
+         * Stub 제공
+         */
+        public List<User> getUpdated() {
+            return updated;
+        }
+
+        /**
+         * Mock Object 제공
+         */
+        @Override
+        public List<User> getAll() {
+            return users;
+        }
+
+        @Override
+        public void update(User user) {
+            updated.add(user);
+        }
+
+        @Override
+        public void add(User user) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public User get(String id) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void deleteAll() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getCount() {
+            throw new UnsupportedOperationException();
+        }
+
+
     }
 }
