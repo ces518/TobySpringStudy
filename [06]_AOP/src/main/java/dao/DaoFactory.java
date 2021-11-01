@@ -2,6 +2,7 @@ package dao;
 
 import domain.DefaultUserLevelUpgradePolicy;
 import domain.UserLevelUpgradePolicy;
+import factorybean.MessageFactoryBean;
 import javax.sql.DataSource;
 import mail.DummyMailSender;
 import org.springframework.context.annotation.Bean;
@@ -74,5 +75,12 @@ public class DaoFactory {
     @Bean
     public MailSender dummyMailSender() {
         return new DummyMailSender();
+    }
+
+    @Bean
+    public MessageFactoryBean message() {
+        MessageFactoryBean messageFactoryBean = new MessageFactoryBean();
+        messageFactoryBean.setText("Factory Bean");
+        return messageFactoryBean;
     }
 }
