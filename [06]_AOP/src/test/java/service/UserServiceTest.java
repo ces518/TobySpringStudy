@@ -37,6 +37,9 @@ class UserServiceTest {
     UserService userService;
 
     @Autowired
+    UserServiceImpl userServiceImpl;
+
+    @Autowired
     UserDao userDao;
 
     @Autowired
@@ -55,7 +58,6 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         mailSender = new DummyMailSender();
-        userService.setMailSender(mailSender);
         users = List.of(
             new User("ncucu", "엔꾸꾸", "p", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER - 1, 0),
             new User("ncucu1", "엔꾸꾸1", "p1", Level.BASIC, MIN_LOGIN_COUNT_FOR_SILVER, 0),
@@ -77,8 +79,8 @@ class UserServiceTest {
             userDao.add(user);
         }
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
-        userService.upgradeLevels();
+        userServiceImpl.setMailSender(mockMailSender);
+        userServiceImpl.upgradeLevels();
 
         checkLevel(users.get(0), false);
         checkLevel(users.get(1), true);
@@ -142,7 +144,7 @@ class UserServiceTest {
     }
 
     // 테스트용 UserService
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
 
         public TestUserService(String id) {
