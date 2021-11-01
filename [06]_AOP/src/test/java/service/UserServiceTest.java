@@ -15,6 +15,7 @@ import dao.UserDao;
 import domain.Level;
 import domain.User;
 import domain.UserLevelUpgradePolicy;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -31,6 +32,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import transaction.TransactionHandler;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
@@ -166,8 +168,19 @@ class UserServiceTest {
         service.setDataSource(this.dataSource);
         service.setTransactionManager(this.transactionManager);
         service.setMailSender(this.mailSender);
+
+        TransactionHandler txHandler = new TransactionHandler();
+        txHandler.setTarget(service);
+        txHandler.setTransactionManager(this.transactionManager);
+        txHandler.setPattern("upgradeLevels");
+
+        UserService txUserService = (UserService) Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[]{UserService.class},
+            txHandler
+        );
         try {
-            service.upgradeLevels();
+            txUserService.upgradeLevels();
             fail("TestUserServiceException expected"); // 예외가 발생하지 않는다면 실패
         } catch (TestUserServiceException ignored) {
         }
