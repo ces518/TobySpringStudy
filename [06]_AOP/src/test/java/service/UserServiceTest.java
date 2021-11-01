@@ -4,6 +4,11 @@ import static domain.DefaultUserLevelUpgradePolicy.MIN_LOGIN_COUNT_FOR_SILVER;
 import static domain.DefaultUserLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import dao.DaoFactory;
 import dao.UserDao;
@@ -17,6 +22,7 @@ import mail.DummyMailSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -94,6 +100,33 @@ class UserServiceTest {
         assertThat(request.size()).isEqualTo(2);
         assertThat(request.get(0)).isEqualTo(users.get(1).getEmail());
         assertThat(request.get(1)).isEqualTo(users.get(3).getEmail());
+    }
+
+    @Test
+    void mockUpgradeLevels() throws Exception {
+        UserServiceImpl userService = new UserServiceImpl();
+
+        UserDao mockUserDao = mock(UserDao.class);
+        when(mockUserDao.getAll()).thenReturn(this.users);
+        userService.setUserDao(mockUserDao);
+
+        MailSender mockMailSender = mock(MailSender.class);
+        userService.setMailSender(mockMailSender);
+        userService.setUserLevelUpgradePolicy(policy);
+
+        userService.upgradeLevels();
+
+        verify(mockUserDao, times(2)).update(any(User.class));
+        verify(mockUserDao).update(users.get(1));
+        assertThat(users.get(1).getLevel()).isEqualTo(Level.SILVER);
+        verify(mockUserDao).update(users.get(3));
+        assertThat(users.get(3).getLevel()).isEqualTo(Level.GOLD);
+
+        ArgumentCaptor<SimpleMailMessage> mailMessageArg = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mockMailSender, times(2)).send(mailMessageArg.capture());
+        List<SimpleMailMessage> mailMessages = mailMessageArg.getAllValues();
+        assertThat(mailMessages.get(0).getTo()[0]).isEqualTo(users.get(1).getEmail());
+        assertThat(mailMessages.get(1).getTo()[0]).isEqualTo(users.get(3).getEmail());
     }
 
     private void checkUserAndLevel(User updated, String expected, Level expectedLevel) {
