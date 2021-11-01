@@ -3,6 +3,7 @@ package dao;
 import domain.DefaultUserLevelUpgradePolicy;
 import domain.UserLevelUpgradePolicy;
 import factorybean.MessageFactoryBean;
+import factorybean.TxProxyFactoryBean;
 import javax.sql.DataSource;
 import mail.DummyMailSender;
 import org.springframework.context.annotation.Bean;
@@ -37,11 +38,13 @@ public class DaoFactory {
     }
 
     @Bean
-    public UserService userService() {
-        UserServiceTx userServiceTx = new UserServiceTx();
-        userServiceTx.setUserService(userServiceImpl());
-        userServiceTx.setTransactionManager(transactionManager());
-        return userServiceTx;
+    public TxProxyFactoryBean userService() {
+        TxProxyFactoryBean txProxyFactoryBean = new TxProxyFactoryBean();
+        txProxyFactoryBean.setTarget(userServiceImpl());
+        txProxyFactoryBean.setTransactionManager(transactionManager());
+        txProxyFactoryBean.setPattern("upgradeLevels");
+        txProxyFactoryBean.setServiceInterface(UserService.class);
+        return txProxyFactoryBean;
     }
 
     @Bean
