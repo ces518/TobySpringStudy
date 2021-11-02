@@ -9,6 +9,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
 public class JdkProxyTest {
 
@@ -49,6 +51,29 @@ public class JdkProxyTest {
         assertThat(proxiedHello.sayHello("ncucu")).isEqualTo("HELLO NCUCU");
         assertThat(proxiedHello.sayHi("ncucu")).isEqualTo("HI NCUCU");
         assertThat(proxiedHello.sayThankYou("ncucu")).isEqualTo("THANK YOU NCUCU");
+    }
+
+    @Test
+    void pointCutAdvisor() {
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(new HelloTarget());
+
+        // 포인트 컷 지정
+        // 포인트컷 : 부가기능 적용 대상 선정 알고리즘
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("sayH*");
+
+        // 어드바이스 지정
+        // 어드바이스 : 부가기능
+        // 어드바이저 : 포인트컷 + 어드바이스
+        // 어드바이저로 지정하는 이유 ?
+        // 여러 개의 어드바이스와 포인트컷이 존재할 수 있기 때문이다.
+        proxyFactoryBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UpperCaseAdvice()));
+
+        Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
+        assertThat(proxiedHello.sayHello("ncucu")).isEqualTo("HELLO NCUCU");
+        assertThat(proxiedHello.sayHi("ncucu")).isEqualTo("HI NCUCU");
+        assertThat(proxiedHello.sayThankYou("ncucu")).isEqualTo("Thank You ncucu");
     }
 
     interface Hello {
