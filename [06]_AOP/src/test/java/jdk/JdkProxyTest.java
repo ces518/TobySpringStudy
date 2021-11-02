@@ -8,6 +8,8 @@ import java.lang.reflect.Proxy;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
@@ -74,6 +76,48 @@ public class JdkProxyTest {
         assertThat(proxiedHello.sayHello("ncucu")).isEqualTo("HELLO NCUCU");
         assertThat(proxiedHello.sayHi("ncucu")).isEqualTo("HI NCUCU");
         assertThat(proxiedHello.sayThankYou("ncucu")).isEqualTo("Thank You ncucu");
+    }
+
+    @Test
+    void classNamePointcutAdvisor() {
+        // 포인트컷 준비
+        NameMatchMethodPointcut classMethodPointCut = new NameMatchMethodPointcut() {
+            @Override
+            public ClassFilter getClassFilter() {
+                return new ClassFilter() {
+                    @Override
+                    public boolean matches(Class<?> clazz) {
+                        return clazz.getSimpleName().startsWith("HelloT");
+                    }
+                };
+            }
+        };
+        classMethodPointCut.setMappedName("sayH*");
+
+        checkAdviced(new HelloTarget(), classMethodPointCut, true);
+
+        class HelloWord extends HelloTarget {};
+        checkAdviced(new HelloWord(), classMethodPointCut, false);
+
+        class HelloToby extends HelloTarget {};
+        checkAdviced(new HelloToby(), classMethodPointCut, true);
+    }
+
+    private void checkAdviced(Object target, Pointcut pointcut, boolean adviced) {
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(target);
+        proxyFactoryBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UpperCaseAdvice()));
+        Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
+
+        if (adviced) {
+            assertThat(proxiedHello.sayHello("ncucu")).isEqualTo("HELLO NCUCU");
+            assertThat(proxiedHello.sayHi("ncucu")).isEqualTo("HI NCUCU");
+            assertThat(proxiedHello.sayThankYou("ncucu")).isEqualTo("Thank You ncucu");
+        } else {
+            assertThat(proxiedHello.sayHello("ncucu")).isEqualTo("Hello ncucu");
+            assertThat(proxiedHello.sayHi("ncucu")).isEqualTo("Hi ncucu");
+            assertThat(proxiedHello.sayThankYou("ncucu")).isEqualTo("Thank You ncucu");
+        }
     }
 
     interface Hello {
