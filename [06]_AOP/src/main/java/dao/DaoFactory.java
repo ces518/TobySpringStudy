@@ -5,6 +5,7 @@ import domain.UserLevelUpgradePolicy;
 import factorybean.MessageFactoryBean;
 import javax.sql.DataSource;
 import mail.DummyMailSender;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
@@ -99,10 +100,9 @@ public class DaoFactory {
     }
 
     @Bean
-    public NameMatchClassMethodPointcut transactionPointcut() {
-        NameMatchClassMethodPointcut nameMatchClassMethodPointcut = new NameMatchClassMethodPointcut();
-        nameMatchClassMethodPointcut.setMappedClassName("*ServiceImpl");
-        nameMatchClassMethodPointcut.setMappedName("upgrade*");
-        return nameMatchClassMethodPointcut;
+    public AspectJExpressionPointcut transactionPointcut() {
+        AspectJExpressionPointcut aspectJExpressionPointcut = new AspectJExpressionPointcut();
+        aspectJExpressionPointcut.setExpression("execution(* *..*ServiceImpl.upgrade*(..))");
+        return aspectJExpressionPointcut;
     }
 }
