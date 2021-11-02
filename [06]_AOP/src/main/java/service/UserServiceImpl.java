@@ -62,6 +62,26 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User get(String id) {
+        return userDao.get(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    @Override
+    public int getCount() {
+        return userDao.getCount();
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
     private boolean canUpgradeLevel(User user) {
         return policy.canUpgradeLevel(user);
     }

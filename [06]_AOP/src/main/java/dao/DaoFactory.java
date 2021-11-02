@@ -3,6 +3,7 @@ package dao;
 import domain.DefaultUserLevelUpgradePolicy;
 import domain.UserLevelUpgradePolicy;
 import factorybean.MessageFactoryBean;
+import java.util.Properties;
 import javax.sql.DataSource;
 import mail.DummyMailSender;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
@@ -15,6 +16,7 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 import proxyfactorybean.NameMatchClassMethodPointcut;
 import proxyfactorybean.TransactionAdvice;
 import service.UserService;
@@ -80,12 +82,12 @@ public class DaoFactory {
         return messageFactoryBean;
     }
 
-    @Bean
-    public TransactionAdvice transactionAdvice() {
-        TransactionAdvice transactionAdvice = new TransactionAdvice();
-        transactionAdvice.setTransactionManager(transactionManager());
-        return transactionAdvice;
-    }
+//    @Bean
+//    public TransactionAdvice transactionAdvice() {
+//        TransactionAdvice transactionAdvice = new TransactionAdvice();
+//        transactionAdvice.setTransactionManager(transactionManager());
+//        return transactionAdvice;
+//    }
 
 
     @Bean
@@ -104,5 +106,18 @@ public class DaoFactory {
         AspectJExpressionPointcut aspectJExpressionPointcut = new AspectJExpressionPointcut();
         aspectJExpressionPointcut.setExpression("execution(* *..*ServiceImpl.upgrade*(..))");
         return aspectJExpressionPointcut;
+    }
+
+    @Bean
+    public TransactionInterceptor transactionAdvice() {
+        TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
+        transactionInterceptor.setTransactionManager(transactionManager());
+        Properties properties = new Properties();
+        // 트랜잭션 속성 정의, 생략된 부분은 DefaultDefinition 을 따른다.
+        properties.put("get*", "PROPAGATION_REQUIRED,readOnly,timeout_30");
+        properties.put("upgrade*", "PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE");
+        properties.put("*","PROPAGATION_REQUIRED");
+        transactionInterceptor.setTransactionAttributes(properties);
+        return transactionInterceptor;
     }
 }
