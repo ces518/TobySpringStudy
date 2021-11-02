@@ -5,7 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.framework.ProxyFactoryBean;
 
 public class JdkProxyTest {
 
@@ -32,6 +35,17 @@ public class JdkProxyTest {
             new Class[]{Hello.class},
             new UppercaseHandler(new HelloTarget())
         );
+        assertThat(proxiedHello.sayHello("ncucu")).isEqualTo("HELLO NCUCU");
+        assertThat(proxiedHello.sayHi("ncucu")).isEqualTo("HI NCUCU");
+        assertThat(proxiedHello.sayThankYou("ncucu")).isEqualTo("THANK YOU NCUCU");
+    }
+
+    @Test
+    void proxyFactoryBean() {
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(new HelloTarget());
+        proxyFactoryBean.addAdvice(new UpperCaseAdvice());
+        Hello proxiedHello = (Hello) proxyFactoryBean.getObject();
         assertThat(proxiedHello.sayHello("ncucu")).isEqualTo("HELLO NCUCU");
         assertThat(proxiedHello.sayHi("ncucu")).isEqualTo("HI NCUCU");
         assertThat(proxiedHello.sayThankYou("ncucu")).isEqualTo("THANK YOU NCUCU");
@@ -100,6 +114,16 @@ public class JdkProxyTest {
                 return ((String)ret).toUpperCase();
             }
             return ret;
+        }
+    }
+
+
+    static class UpperCaseAdvice implements MethodInterceptor {
+
+        @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            String ret = (String)invocation.proceed();
+            return ret.toUpperCase();
         }
     }
 }
