@@ -15,8 +15,6 @@ import dao.UserDao;
 import domain.Level;
 import domain.User;
 import domain.UserLevelUpgradePolicy;
-import factorybean.TxProxyFactoryBean;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -35,7 +33,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
-import transaction.TransactionHandler;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
@@ -49,9 +46,6 @@ class UserServiceTest {
 
     @Autowired
     UserService userService;
-
-    @Autowired
-    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -169,7 +163,7 @@ class UserServiceTest {
             userDao.add(user);
         }
 
-        TestUserService service = new TestUserService(users.get(3).getId());
+        TestUserServiceImpl service = new TestUserServiceImpl();
         service.setUserDao(this.userDao);
         service.setUserLevelUpgradePolicy(this.policy);
         service.setDataSource(this.dataSource);
@@ -199,13 +193,9 @@ class UserServiceTest {
     }
 
     // 테스트용 UserService
-    static class TestUserService extends UserServiceImpl {
+    static class TestUserServiceImpl extends UserServiceImpl {
 
-        private String id;
-
-        public TestUserService(String id) {
-            this.id = id;
-        }
+        private String id = "ncucu3";
 
         @Override
         protected void upgradeLevel(User user) {
