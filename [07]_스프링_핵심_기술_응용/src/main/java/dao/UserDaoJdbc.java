@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import sqlservice.SqlService;
 
 public class UserDaoJdbc implements UserDao {
 
@@ -25,7 +26,7 @@ public class UserDaoJdbc implements UserDao {
             return user;
         };
 
-    private Map<String, String> sqlMap;
+    private SqlService sqlService;
 //    "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
 
     public UserDaoJdbc() {
@@ -38,14 +39,14 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void setSqlMap(Map<String, String> sqlMap) {
-        this.sqlMap = sqlMap;
+    public void setSqlService(SqlService sqlService) {
+        this.sqlService = sqlService;
     }
 
     @Override
     public void add(final User user) throws DuplicateKeyException {
         jdbcTemplate.update(
-            sqlMap.get("add"),
+            sqlService.getSql("userAdd"),
             user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend()
         );
     }
@@ -53,7 +54,7 @@ public class UserDaoJdbc implements UserDao {
     @Override
     public User get(String id) {
         return jdbcTemplate.queryForObject(
-            "select * from users where id = ?",
+            sqlService.getSql("userGet"),
             userMapper,
             id
         );
@@ -61,20 +62,18 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.update("delete from users");
+        jdbcTemplate.update(sqlService.getSql("userDelete"));
     }
 
     @Override
     public int getCount() {
-        // queryForInt 는 Deprecated 됨
-        return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+        return jdbcTemplate.queryForObject(sqlService.getSql("userCount"), Integer.class);
     }
 
     @Override
     public void update(User user) {
         jdbcTemplate.update(
-            "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? "
-                + "where id = ? ",
+            sqlService.getSql("userUpdate"),
             user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(),
             user.getId()
         );
@@ -82,6 +81,6 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("select * from users order by id", userMapper);
+        return jdbcTemplate.query(sqlService.getSql("userGetAll"), userMapper);
     }
 }

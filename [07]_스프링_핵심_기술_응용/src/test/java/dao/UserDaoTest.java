@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import domain.Level;
 import domain.User;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import sqlservice.SimpleSqlService;
 
 class UserDaoTest {
 
@@ -33,12 +36,44 @@ class UserDaoTest {
     @BeforeEach
     void setUp() {
         UserDaoJdbc dao = new UserDaoJdbc();
+
         // TestDI
         // SingleConnectionDataSource 는 커넥션을 하나만 만들어서 계속 사용하기 때문에 매우 빠르다.
         DataSource dataSource = new SingleConnectionDataSource(
             "jdbc:mysql://localhost/test", "root", "password", true);
         this.dataSource = dataSource;
         dao.setDataSource(dataSource);
+
+        SimpleSqlService sqlService = new SimpleSqlService();
+        Map<String, String> sqlMap = new HashMap<>();
+        sqlMap.put(
+            "userAdd",
+            "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
+        );
+        sqlMap.put(
+            "userGet",
+            "select * from users where id = ?"
+        );
+        sqlMap.put(
+            "userGetAll",
+            "select * from users order by id"
+        );
+        sqlMap.put(
+            "userDelete",
+            "delete from users"
+        );
+        sqlMap.put(
+            "userCount",
+            "select count(*) from users"
+        );
+        sqlMap.put(
+            "userUpdate",
+            "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?"
+        );
+        sqlService.setSqlMap(sqlMap);
+        dao.setSqlService(sqlService);
+
+
         this.dao = dao;
 
         user1 = new User("ncucu", "엔꾸꾸", "password", Level.BASIC, 1, 0);

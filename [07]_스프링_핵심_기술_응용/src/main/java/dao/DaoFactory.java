@@ -22,6 +22,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import service.UserService;
 import service.UserServiceImpl;
+import sqlservice.SimpleSqlService;
+import sqlservice.SqlService;
 
 @Configuration
 public class DaoFactory {
@@ -30,33 +32,40 @@ public class DaoFactory {
     public UserDao userDao() {
         UserDaoJdbc userDao = new UserDaoJdbc();
         userDao.setDataSource(dataSource());
+        userDao.setSqlService(sqlService());
+        return userDao;
+    }
+
+    @Bean
+    public SqlService sqlService() {
+        SimpleSqlService sqlService = new SimpleSqlService();
         Map<String, String> sqlMap = new HashMap<>();
         sqlMap.put(
-            "add",
+            "userAdd",
             "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
         );
         sqlMap.put(
-            "get",
+            "userGet",
             "select * from users where id = ?"
         );
         sqlMap.put(
-            "getAll",
+            "userGetAll",
             "select * from users order by id"
         );
         sqlMap.put(
-            "deleteAll",
+            "userDelete",
             "delete from users"
         );
         sqlMap.put(
-            "getCount",
+            "userCount",
             "select count(*) from users"
         );
         sqlMap.put(
-            "update",
-            "update users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?"
+            "userUpdate",
+            "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?"
         );
-        userDao.setSqlMap(sqlMap);
-        return userDao;
+        sqlService.setSqlMap(sqlMap);
+        return sqlService;
     }
 
     @Bean
