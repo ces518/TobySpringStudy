@@ -18,7 +18,7 @@ public class JaxbTest {
         Unmarshaller unmarshaller = context.createUnmarshaller();
 
         Sqlmap sqlMap = (Sqlmap) unmarshaller.unmarshal(
-            getClass().getResourceAsStream("sqlmap.xml")
+            getClass().getResourceAsStream("dao/sqlmap.xml")
         );
 
         List<SqlType> sqlList = sqlMap.getSql();

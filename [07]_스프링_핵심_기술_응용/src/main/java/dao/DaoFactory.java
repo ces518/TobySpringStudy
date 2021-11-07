@@ -24,6 +24,7 @@ import service.UserService;
 import service.UserServiceImpl;
 import sqlservice.SimpleSqlService;
 import sqlservice.SqlService;
+import sqlservice.XmlSqlService;
 
 @Configuration
 public class DaoFactory {
@@ -38,34 +39,7 @@ public class DaoFactory {
 
     @Bean
     public SqlService sqlService() {
-        SimpleSqlService sqlService = new SimpleSqlService();
-        Map<String, String> sqlMap = new HashMap<>();
-        sqlMap.put(
-            "userAdd",
-            "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
-        );
-        sqlMap.put(
-            "userGet",
-            "select * from users where id = ?"
-        );
-        sqlMap.put(
-            "userGetAll",
-            "select * from users order by id"
-        );
-        sqlMap.put(
-            "userDelete",
-            "delete from users"
-        );
-        sqlMap.put(
-            "userCount",
-            "select count(*) from users"
-        );
-        sqlMap.put(
-            "userUpdate",
-            "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?"
-        );
-        sqlService.setSqlMap(sqlMap);
-        return sqlService;
+        return new XmlSqlService();
     }
 
     @Bean
