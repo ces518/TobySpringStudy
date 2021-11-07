@@ -47,6 +47,8 @@ class UserDaoTest {
 
         XmlSqlService sqlService = new XmlSqlService();
         sqlService.setSqlmapFile("sqlmap.xml");
+        sqlService.setReader(sqlService);
+        sqlService.setRegistry(sqlService);
         sqlService.loadSql();
         dao.setSqlService(sqlService);
 

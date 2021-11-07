@@ -41,6 +41,9 @@ public class DaoFactory {
     public SqlService sqlService() {
         XmlSqlService sqlService = new XmlSqlService();
         sqlService.setSqlmapFile("sqlmap.xml");
+        // Self 참조 빈
+        sqlService.setReader(sqlService);
+        sqlService.setRegistry(sqlService);
         return sqlService;
     }
 

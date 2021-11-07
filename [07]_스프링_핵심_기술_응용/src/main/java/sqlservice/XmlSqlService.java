@@ -1,6 +1,7 @@
 package sqlservice;
 
 import dao.UserDao;
+import errors.SqlNotFoundException;
 import errors.SqlRetrievalFailureException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,7 +13,10 @@ import javax.xml.bind.Unmarshaller;
 import sqlservice.jaxb.SqlType;
 import sqlservice.jaxb.Sqlmap;
 
-public class XmlSqlService implements SqlService {
+public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
+
+    private SqlReader reader;
+    private SqlRegistry registry;
 
     private Map<String, String> sqlMap = new HashMap<>();
     private String sqlmapFile;
@@ -25,6 +29,14 @@ public class XmlSqlService implements SqlService {
         this.sqlmapFile = sqlmapFile;
     }
 
+    public void setReader(SqlReader reader) {
+        this.reader = reader;
+    }
+
+    public void setRegistry(SqlRegistry registry) {
+        this.registry = registry;
+    }
+
     /**
      * 스프링이 제공하는 BeanPostProcessor
      * @see InitDestroyAnnotationBeanPostProcessor
@@ -32,8 +44,34 @@ public class XmlSqlService implements SqlService {
      */
     @PostConstruct
     public void loadSql() {
-        // 생성자에 복잡한 초기화 로직을 넣는것은 좋은 방법이 아니다.
-        // 별도의 메소드로 추출해 호출해 주는 방식 사용..
+        reader.read(registry);
+    }
+
+    @Override
+    public String getSql(String key) throws SqlRetrievalFailureException {
+        try {
+            return registry.findSql(key);
+        } catch (SqlNotFoundException e) {
+            throw new SqlRetrievalFailureException(e);
+        }
+    }
+
+    @Override
+    public void registerSql(String key, String sql) {
+        sqlMap.put(key,sql);
+    }
+
+    @Override
+    public String findSql(String key) throws SqlNotFoundException {
+        String sql = sqlMap.get(key);
+        if (sql == null) {
+            throw new SqlRetrievalFailureException(key + " 에 해당하는 SQL 을 찾을 수 없습니다.");
+        }
+        return sql;
+    }
+
+    @Override
+    public void read(SqlRegistry registry) {
         String contextPath = Sqlmap.class.getPackage().getName();
         try {
             JAXBContext context = JAXBContext.newInstance(contextPath);
@@ -41,19 +79,10 @@ public class XmlSqlService implements SqlService {
             InputStream is = UserDao.class.getResourceAsStream(sqlmapFile);
             Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(is);
             for (SqlType sql : sqlmap.getSql()) {
-                sqlMap.put(sql.getKey(), sql.getValue());
+                registry.registerSql(sql.getKey(), sql.getValue());
             }
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public String getSql(String key) throws SqlRetrievalFailureException {
-        String sql = sqlMap.get(key);
-        if (sql == null) {
-            throw new SqlRetrievalFailureException(key + " 에 해당하는 SQL 을 찾을 수 없습니다.");
-        }
-        return sql;
     }
 }
