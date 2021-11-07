@@ -3,6 +3,9 @@ package dao;
 import domain.DefaultUserLevelUpgradePolicy;
 import domain.UserLevelUpgradePolicy;
 import factorybean.MessageFactoryBean;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.sql.DataSource;
 import mail.DummyMailSender;
@@ -27,7 +30,32 @@ public class DaoFactory {
     public UserDao userDao() {
         UserDaoJdbc userDao = new UserDaoJdbc();
         userDao.setDataSource(dataSource());
-        userDao.setSqlAdd("insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)");
+        Map<String, String> sqlMap = new HashMap<>();
+        sqlMap.put(
+            "add",
+            "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
+        );
+        sqlMap.put(
+            "get",
+            "select * from users where id = ?"
+        );
+        sqlMap.put(
+            "getAll",
+            "select * from users order by id"
+        );
+        sqlMap.put(
+            "deleteAll",
+            "delete from users"
+        );
+        sqlMap.put(
+            "getCount",
+            "select count(*) from users"
+        );
+        sqlMap.put(
+            "update",
+            "update users set name = ?, password = ?, email = ?, level = ?, login = ?, recommend = ? where id = ?"
+        );
+        userDao.setSqlMap(sqlMap);
         return userDao;
     }
 

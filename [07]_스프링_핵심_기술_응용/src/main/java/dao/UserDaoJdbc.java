@@ -3,6 +3,7 @@ package dao;
 import domain.Level;
 import domain.User;
 import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +25,7 @@ public class UserDaoJdbc implements UserDao {
             return user;
         };
 
-    private String sqlAdd;
+    private Map<String, String> sqlMap;
 //    "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
 
     public UserDaoJdbc() {
@@ -37,14 +38,14 @@ public class UserDaoJdbc implements UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void setSqlAdd(String sqlAdd) {
-        this.sqlAdd = sqlAdd;
+    public void setSqlMap(Map<String, String> sqlMap) {
+        this.sqlMap = sqlMap;
     }
 
     @Override
     public void add(final User user) throws DuplicateKeyException {
         jdbcTemplate.update(
-            sqlAdd,
+            sqlMap.get("add"),
             user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend()
         );
     }
