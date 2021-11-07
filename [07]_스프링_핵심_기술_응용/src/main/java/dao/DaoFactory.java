@@ -39,7 +39,9 @@ public class DaoFactory {
 
     @Bean
     public SqlService sqlService() {
-        return new XmlSqlService();
+        XmlSqlService sqlService = new XmlSqlService();
+        sqlService.setSqlmapFile("sqlmap.xml");
+        return sqlService;
     }
 
     @Bean
