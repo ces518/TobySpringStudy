@@ -18,6 +18,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import sqlservice.SimpleSqlService;
+import sqlservice.XmlSqlService;
 
 class UserDaoTest {
 
@@ -44,33 +45,7 @@ class UserDaoTest {
         this.dataSource = dataSource;
         dao.setDataSource(dataSource);
 
-        SimpleSqlService sqlService = new SimpleSqlService();
-        Map<String, String> sqlMap = new HashMap<>();
-        sqlMap.put(
-            "userAdd",
-            "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
-        );
-        sqlMap.put(
-            "userGet",
-            "select * from users where id = ?"
-        );
-        sqlMap.put(
-            "userGetAll",
-            "select * from users order by id"
-        );
-        sqlMap.put(
-            "userDelete",
-            "delete from users"
-        );
-        sqlMap.put(
-            "userCount",
-            "select count(*) from users"
-        );
-        sqlMap.put(
-            "userUpdate",
-            "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?"
-        );
-        sqlService.setSqlMap(sqlMap);
+        XmlSqlService sqlService = new XmlSqlService();
         dao.setSqlService(sqlService);
 
 
