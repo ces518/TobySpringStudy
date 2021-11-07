@@ -18,6 +18,14 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.5'
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.5.5'
     implementation 'org.springframework.boot:spring-boot-starter-aop:2.5.5'
+
+
+//    JDK 11 에서 Deprecated 되어 의존성 추가 또는 vm 아규먼트 추가 필요..!
+    //  https://luvstudy.tistory.com/61
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
+//    implementation 'org.springframework:spring-oxm'
 }
 
 test {
