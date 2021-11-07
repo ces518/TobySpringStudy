@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import domain.Level;
 import domain.User;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +15,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
-import sqlservice.SimpleSqlService;
-import sqlservice.XmlSqlService;
+import sqlservice.BaseSqlService;
+import sqlservice.HashMapSqlRegistry;
+import sqlservice.JaxbXmlSqlReader;
 
 class UserDaoTest {
 
@@ -45,10 +44,11 @@ class UserDaoTest {
         this.dataSource = dataSource;
         dao.setDataSource(dataSource);
 
-        XmlSqlService sqlService = new XmlSqlService();
-        sqlService.setSqlmapFile("sqlmap.xml");
-        sqlService.setReader(sqlService);
-        sqlService.setRegistry(sqlService);
+        BaseSqlService sqlService = new BaseSqlService();
+        JaxbXmlSqlReader sqlReader = new JaxbXmlSqlReader();
+        sqlReader.setSqlmapFile("sqlmap.xml");
+        sqlService.setReader(sqlReader);
+        sqlService.setRegistry(new HashMapSqlRegistry());
         sqlService.loadSql();
         dao.setSqlService(sqlService);
 

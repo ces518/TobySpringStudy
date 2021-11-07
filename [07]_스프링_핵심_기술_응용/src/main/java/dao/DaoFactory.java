@@ -3,9 +3,6 @@ package dao;
 import domain.DefaultUserLevelUpgradePolicy;
 import domain.UserLevelUpgradePolicy;
 import factorybean.MessageFactoryBean;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import javax.sql.DataSource;
 import mail.DummyMailSender;
@@ -22,9 +19,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import service.UserService;
 import service.UserServiceImpl;
-import sqlservice.SimpleSqlService;
+import sqlservice.HashMapSqlRegistry;
+import sqlservice.JaxbXmlSqlReader;
+import sqlservice.SqlReader;
+import sqlservice.SqlRegistry;
 import sqlservice.SqlService;
-import sqlservice.XmlSqlService;
+import sqlservice.BaseSqlService;
 
 @Configuration
 public class DaoFactory {
@@ -39,12 +39,22 @@ public class DaoFactory {
 
     @Bean
     public SqlService sqlService() {
-        XmlSqlService sqlService = new XmlSqlService();
-        sqlService.setSqlmapFile("sqlmap.xml");
-        // Self 참조 빈
-        sqlService.setReader(sqlService);
-        sqlService.setRegistry(sqlService);
+        BaseSqlService sqlService = new BaseSqlService();
+        sqlService.setReader(sqlReader());
+        sqlService.setRegistry(sqlRegistry());
         return sqlService;
+    }
+
+    @Bean
+    public SqlReader sqlReader() {
+        JaxbXmlSqlReader sqlReader = new JaxbXmlSqlReader();
+        sqlReader.setSqlmapFile("sqlmap.xml");
+        return sqlReader;
+    }
+
+    @Bean
+    public SqlRegistry sqlRegistry() {
+        return new HashMapSqlRegistry();
     }
 
     @Bean
