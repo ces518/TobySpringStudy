@@ -19,6 +19,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import service.UserService;
 import service.UserServiceImpl;
+import sqlservice.DefaultSqlService;
 import sqlservice.HashMapSqlRegistry;
 import sqlservice.JaxbXmlSqlReader;
 import sqlservice.SqlReader;
@@ -39,23 +40,28 @@ public class DaoFactory {
 
     @Bean
     public SqlService sqlService() {
-        BaseSqlService sqlService = new BaseSqlService();
-        sqlService.setReader(sqlReader());
-        sqlService.setRegistry(sqlRegistry());
-        return sqlService;
+        return new DefaultSqlService();
     }
 
-    @Bean
-    public SqlReader sqlReader() {
-        JaxbXmlSqlReader sqlReader = new JaxbXmlSqlReader();
-        sqlReader.setSqlmapFile("sqlmap.xml");
-        return sqlReader;
-    }
-
-    @Bean
-    public SqlRegistry sqlRegistry() {
-        return new HashMapSqlRegistry();
-    }
+//    @Bean
+//    public SqlService sqlService() {
+//        BaseSqlService sqlService = new BaseSqlService();
+//        sqlService.setReader(sqlReader());
+//        sqlService.setRegistry(sqlRegistry());
+//        return sqlService;
+//    }
+//
+//    @Bean
+//    public SqlReader sqlReader() {
+//        JaxbXmlSqlReader sqlReader = new JaxbXmlSqlReader();
+//        sqlReader.setSqlmapFile("sqlmap.xml");
+//        return sqlReader;
+//    }
+//
+//    @Bean
+//    public SqlRegistry sqlRegistry() {
+//        return new HashMapSqlRegistry();
+//    }
 
     @Bean
     public DataSource dataSource() {

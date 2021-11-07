@@ -45,9 +45,7 @@ class UserDaoTest {
         dao.setDataSource(dataSource);
 
         BaseSqlService sqlService = new BaseSqlService();
-        JaxbXmlSqlReader sqlReader = new JaxbXmlSqlReader();
-        sqlReader.setSqlmapFile("sqlmap.xml");
-        sqlService.setReader(sqlReader);
+        sqlService.setReader(new JaxbXmlSqlReader());
         sqlService.setRegistry(new HashMapSqlRegistry());
         sqlService.loadSql();
         dao.setSqlService(sqlService);
