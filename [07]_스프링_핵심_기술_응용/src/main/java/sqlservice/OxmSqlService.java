@@ -17,20 +17,23 @@ public class OxmSqlService implements SqlService {
     // 유연성은 떨어지지만 내부적으로 낮은 결합도와 높은 응집도를 가진 구현을 가진 방법..
     // -> OXM 을 이용하는 서비스 구조로 최적화 하기 위한 구조..
     private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
+
+    // OxmSqlService 는 Read/Registry 에 대한 확장 기능만 담당하고 있다.
+    // 기본적인 기능은 BaseSqlService 가 처리한다. (위임 구조)
+    private final BaseSqlService baseSqlService = new BaseSqlService();
+
     private SqlRegistry registry = new HashMapSqlRegistry();
 
     @PostConstruct
     public void loadSql() {
-        oxmSqlReader.read(registry);
+        baseSqlService.setReader(oxmSqlReader);
+        baseSqlService.setRegistry(registry);
+        baseSqlService.loadSql();
     }
 
     @Override
     public String getSql(String key) throws SqlRetrievalFailureException {
-        try {
-            return registry.findSql(key);
-        } catch (SqlNotFoundException e) {
-            throw new SqlRetrievalFailureException(e);
-        }
+        return baseSqlService.getSql(key);
     }
 
     public void setRegistry(SqlRegistry registry) {
