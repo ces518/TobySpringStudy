@@ -15,6 +15,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.oxm.Marshaller;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import service.UserService;
@@ -42,6 +44,13 @@ public class DaoFactory {
     public SqlService sqlService() {
         return new DefaultSqlService();
     }
+
+//    @Bean
+//    public Marshaller marshaller() {
+//        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+//        marshaller.setContextPath("sqlservice.jaxb");
+//        return marshaller;
+//    }
 
 //    @Bean
 //    public SqlService sqlService() {
