@@ -25,7 +25,9 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
     implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
-    implementation 'org.springframework:spring-oxm:5.3.10'
+    implementation 'org.springframework:spring-oxm:5.0.8.RELEASE'
+    implementation 'org.codehaus.castor:castor-core:1.4.1'
+    implementation 'org.codehaus.castor:castor-xml:1.4.1'
 
 }
 
