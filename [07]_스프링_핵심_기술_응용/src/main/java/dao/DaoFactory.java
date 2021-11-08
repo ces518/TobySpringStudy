@@ -9,8 +9,10 @@ import mail.DummyMailSender;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -33,6 +35,9 @@ import sqlservice.BaseSqlService;
 @Configuration
 public class DaoFactory {
 
+    @Autowired
+    ResourceLoader resourceLoader;
+
     @Bean
     public UserDao userDao() {
         UserDaoJdbc userDao = new UserDaoJdbc();
@@ -45,6 +50,7 @@ public class DaoFactory {
     public SqlService sqlService() {
         OxmSqlService sqlService = new OxmSqlService();
         sqlService.setUnmarshaller(marshaller());
+        sqlService.setSqlmap(resourceLoader.getResource("classpath:dao/sqlmap.xml"));
         return sqlService;
     }
 
