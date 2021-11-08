@@ -24,6 +24,7 @@ import service.UserServiceImpl;
 import sqlservice.DefaultSqlService;
 import sqlservice.HashMapSqlRegistry;
 import sqlservice.JaxbXmlSqlReader;
+import sqlservice.OxmSqlService;
 import sqlservice.SqlReader;
 import sqlservice.SqlRegistry;
 import sqlservice.SqlService;
@@ -42,15 +43,17 @@ public class DaoFactory {
 
     @Bean
     public SqlService sqlService() {
-        return new DefaultSqlService();
+        OxmSqlService sqlService = new OxmSqlService();
+        sqlService.setUnmarshaller(marshaller());
+        return sqlService;
     }
 
-//    @Bean
-//    public Marshaller marshaller() {
-//        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-//        marshaller.setContextPath("sqlservice.jaxb");
-//        return marshaller;
-//    }
+    @Bean
+    public Jaxb2Marshaller marshaller() {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setContextPath("sqlservice.jaxb");
+        return marshaller;
+    }
 
 //    @Bean
 //    public SqlService sqlService() {
