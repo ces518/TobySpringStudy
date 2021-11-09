@@ -1,9 +1,11 @@
 package config;
 
+import dao.UserDao;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -18,6 +20,9 @@ public class SqlServiceContext {
 
     @Autowired
     ResourceLoader resourceLoader;
+
+    @Autowired
+    SqlMapConfig sqlMapConfig;
 
     @Bean
     public DataSource embeddedDataBase() {
@@ -34,7 +39,7 @@ public class SqlServiceContext {
     public SqlService sqlService() {
         OxmSqlService sqlService = new OxmSqlService();
         sqlService.setUnmarshaller(marshaller());
-        sqlService.setSqlmap(resourceLoader.getResource("classpath:dao/sqlmap.xml"));
+        sqlService.setSqlmap(sqlMapConfig.getSqlMapResource());
         return sqlService;
     }
 

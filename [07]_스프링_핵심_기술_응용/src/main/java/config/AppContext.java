@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,7 +26,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = "dao")
 @Import({SqlServiceContext.class, ProductionAppContext.class})
 @PropertySource("classpath:database.properties")
-public class AppContext {
+@EnableSqlService
+public class AppContext implements SqlMapConfig {
 
     @Value("${db.driverClass}")
     Class<? extends Driver> driverClass;
@@ -69,5 +72,10 @@ public class AppContext {
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Override
+    public Resource getSqlMapResource() {
+        return new ClassPathResource("sqlmap.xml", UserDao.class);
     }
 }
