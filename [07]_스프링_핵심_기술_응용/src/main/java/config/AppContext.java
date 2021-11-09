@@ -8,26 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import sqlservice.EmbeddedDbSqlRegistry;
-import sqlservice.OxmSqlService;
-import sqlservice.SqlRegistry;
-import sqlservice.SqlService;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "dao")
+@Import({SqlServiceContext.class, ProductionAppContext.class})
 public class AppContext {
-
-    @Autowired
-    ResourceLoader resourceLoader;
 
     @Autowired
     UserDao userDao;
@@ -45,39 +36,6 @@ public class AppContext {
     @Bean
     public PlatformTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
-    }
-
-    @Bean
-    public DataSource embeddedDataBase() {
-        return new EmbeddedDatabaseBuilder()
-            .setName("embeddedDatabase")
-            .setType(EmbeddedDatabaseType.HSQL)
-            .addScript(
-                "classpath:schema.sql"
-            )
-            .build();
-    }
-
-    @Bean
-    public SqlService sqlService() {
-        OxmSqlService sqlService = new OxmSqlService();
-        sqlService.setUnmarshaller(marshaller());
-        sqlService.setSqlmap(resourceLoader.getResource("classpath:dao/sqlmap.xml"));
-        return sqlService;
-    }
-
-    @Bean
-    public Jaxb2Marshaller marshaller() {
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPath("sqlservice.jaxb");
-        return marshaller;
-    }
-
-    @Bean
-    public SqlRegistry sqlRegistry() {
-        EmbeddedDbSqlRegistry registry = new EmbeddedDbSqlRegistry();
-        registry.setDataSource(embeddedDataBase());
-        return registry;
     }
 
     @Bean
