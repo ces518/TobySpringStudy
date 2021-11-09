@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import config.AppContext;
 import config.TestApplicationContext;
 import dao.DaoFactory;
 import dao.UserDao;
@@ -39,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
-    classes = TestApplicationContext.class
+    classes = {TestApplicationContext.class, AppContext.class}
 )
 @DirtiesContext
 @Transactional // 테스트의 경우 기본이 롤백이다.

@@ -6,20 +6,28 @@ import domain.User;
 import domain.UserLevelUpgradePolicy;
 import java.util.List;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 
+@Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     UserLevelUpgradePolicy policy;
 
+    @Autowired
     UserDao userDao;
 
+    @Autowired
     DataSource dataSource;
 
+    @Autowired
     PlatformTransactionManager transactionManager;
 
+    @Autowired
     MailSender mailSender;
 
     public void setUserDao(UserDao userDao) {
