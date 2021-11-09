@@ -5,6 +5,7 @@ import domain.User;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -26,6 +27,7 @@ public class UserDaoJdbc implements UserDao {
             return user;
         };
 
+    @Autowired
     private SqlService sqlService;
 //    "insert into users(id, name, password, level, login, recommend) values (?, ?, ?, ?, ?, ?)"
 
@@ -35,6 +37,7 @@ public class UserDaoJdbc implements UserDao {
     /**
      * 수동 DI 방식
      */
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
