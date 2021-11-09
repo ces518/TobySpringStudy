@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import config.TestApplicationContext;
 import dao.DaoFactory;
 import dao.UserDao;
 import domain.Level;
@@ -38,11 +39,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
-    classes = DaoFactory.class
+    classes = TestApplicationContext.class
 )
 @DirtiesContext
 @Transactional // 테스트의 경우 기본이 롤백이다.
-class UserServiceTest {
+public class UserServiceTest {
 
     @Autowired
     ApplicationContext context;
@@ -197,7 +198,7 @@ class UserServiceTest {
     }
 
     // 테스트용 UserService
-    static class TestUserServiceImpl extends UserServiceImpl {
+    public static class TestUserServiceImpl extends UserServiceImpl {
 
         private String id = "ncucu3";
 
@@ -210,11 +211,11 @@ class UserServiceTest {
         }
     }
 
-    static class TestUserServiceException extends RuntimeException {
+    public static class TestUserServiceException extends RuntimeException {
 
     }
 
-    static class MockMailSender implements MailSender {
+    public static class MockMailSender implements MailSender {
 
         private List<String> requests = new ArrayList<>();
 
@@ -232,7 +233,7 @@ class UserServiceTest {
         }
     }
 
-    static class MockUserDao implements UserDao {
+    public static class MockUserDao implements UserDao {
 
         private List<User> users;
         private List<User> updated = new ArrayList<>();
