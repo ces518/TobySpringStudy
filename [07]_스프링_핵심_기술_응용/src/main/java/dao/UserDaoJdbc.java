@@ -10,9 +10,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import sqlservice.SqlService;
 
-@Component
+@Repository
 public class UserDaoJdbc implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
