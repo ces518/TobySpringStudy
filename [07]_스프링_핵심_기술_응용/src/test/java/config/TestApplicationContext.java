@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import mail.DummyMailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -31,10 +32,14 @@ import sqlservice.SqlService;
  */
 @Configuration
 @EnableTransactionManagement
+@ComponentScan(basePackages = "dao")
 public class TestApplicationContext {
 
     @Autowired
     ResourceLoader resourceLoader;
+
+    @Autowired
+    UserDao userDao;
 
     @Bean
     public DataSource dataSource() {
@@ -52,14 +57,9 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserDao userDao() {
-        return new UserDaoJdbc();
-    }
-
-    @Bean
     public UserService userService() {
         UserServiceImpl service = new UserServiceImpl();
-        service.setUserDao(userDao());
+        service.setUserDao(userDao);
         service.setMailSender(mailSender());
         return service;
     }
@@ -67,7 +67,7 @@ public class TestApplicationContext {
     @Bean
     public UserService testUserService() {
         TestUserServiceImpl testService = new TestUserServiceImpl();
-        testService.setUserDao(userDao());
+        testService.setUserDao(userDao);
         testService.setMailSender(mailSender());
         return testService;
     }
