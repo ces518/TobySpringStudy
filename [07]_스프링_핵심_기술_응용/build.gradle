@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.springframework:spring-oxm:5.0.8.RELEASE'
     implementation 'org.codehaus.castor:castor-core:1.4.1'
     implementation 'org.codehaus.castor:castor-xml:1.4.1'
-
+    implementation 'org.hsqldb:hsqldb:2.4.0'
 }
 
 test {
