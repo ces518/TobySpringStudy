@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.support.StaticApplicationContext;
 
@@ -35,5 +36,26 @@ public class AppTest {
 
         // BeanDefinition 정보를 가져오는것도 가능함
         assertThat(applicationContext.getBeanFactory().getBeanDefinitionCount(), is(1));
+    }
+
+    @Test
+    void registerBeanWithDependency() throws Exception {
+        StaticApplicationContext applicationContext = new StaticApplicationContext();
+
+        // StringPrinter 빈 등록
+        applicationContext.registerBeanDefinition("printer",
+            new RootBeanDefinition(StringPrinter.class));
+
+        BeanDefinition helloDef = new RootBeanDefinition(Hello.class);
+        helloDef.getPropertyValues().addPropertyValue("name", "Spring");
+        // ID 가 printer 로 등록된 빈의 레퍼런스를 프로퍼티로 주입
+        helloDef.getPropertyValues().addPropertyValue("printer", new RuntimeBeanReference("printer"));
+
+        applicationContext.registerBeanDefinition("hello", helloDef);
+
+        Hello hello = applicationContext.getBean("hello", Hello.class);
+        hello.print();
+
+        assertThat(applicationContext.getBean("printer").toString(), is("Hello Spring"));
     }
 }
