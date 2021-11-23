@@ -88,4 +88,31 @@ public class AppTest {
         Hello hello = applicationContext.getBean("hello", Hello.class);
         assertThat(hello, is(notNullValue()));
     }
+
+    /**
+     * 계층형 컨텍스트 구성시
+     * 하위 계층의 빈이 우선순위가 더 높다.
+     * 하지만 방법이 제공된다해서 권장하는 방식은 아니다.
+     * 부모.자식 컨텍스트에 빈이 중복되는 경우 찾기 힘든 버그가 발생하기 쉽다.
+     * 이는 피해야할 방식이다.
+     */
+    @Test
+    void hierarchyContext() throws Exception {
+        // RootContext
+        GenericXmlApplicationContext parent = new GenericXmlApplicationContext("parentContext.xml");
+        // ChildContext
+        GenericApplicationContext child = new GenericApplicationContext(parent);
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(child);
+        reader.loadBeanDefinitions("childContext.xml");
+        child.refresh();
+
+        Printer printer = child.getBean("printer", Printer.class);
+        assertThat(printer, is(notNullValue()));
+
+        Hello hello = child.getBean("hello", Hello.class);
+        assertThat(hello, is(notNullValue()));
+
+        hello.print();
+        assertThat(printer.toString(), is("Hello Child"));
+    }
 }
