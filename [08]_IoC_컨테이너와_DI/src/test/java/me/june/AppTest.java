@@ -10,6 +10,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
 public class AppTest {
@@ -77,5 +78,14 @@ public class AppTest {
         hello.print();
 
         assertThat(applicationContext.getBean("printer").toString(), is("Hello Spring"));
+    }
+
+    @Test
+    void genericXmlApplicationContext() throws Exception {
+        // GenericXmlApplicationContext = GenericApplicationContext + XmlBeanDefinitionReader
+        GenericXmlApplicationContext applicationContext = new GenericXmlApplicationContext(
+            "genericApplicationContext.xml");
+        Hello hello = applicationContext.getBean("hello", Hello.class);
+        assertThat(hello, is(notNullValue()));
     }
 }
