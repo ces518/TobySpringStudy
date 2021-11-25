@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import me.june.bean.AnnotatedHello;
+import me.june.config.AnnotatedHelloConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -126,4 +127,15 @@ public class AppTest {
         AnnotatedHello hello = ctx.getBean("annotatedHello", AnnotatedHello.class);
         assertThat(hello, is(notNullValue()));
     }
+
+    @Test
+    void configurationBeanScanning() throws Exception {
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AnnotatedHelloConfig.class);
+        AnnotatedHello hello = ctx.getBean("annotatedHello", AnnotatedHello.class);
+        assertThat(hello, is(notNullValue()));
+
+        AnnotatedHelloConfig helloConfig = ctx.getBean("annotatedHelloConfig", AnnotatedHelloConfig.class);
+        assertThat(helloConfig, is(notNullValue()));
+    }
+
 }
