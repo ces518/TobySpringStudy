@@ -10,4 +10,15 @@
     <property name="printer" ref="printer"/>
   </bean>
 
+
+<!--
+  inner bean 정의 방식 해당 프로퍼티에서만 참조가 가능하다.
+  특정 빈과 강한 의존관계를 가진 경우 사용한다.
+-->
+  <bean id="hello2" class="me.june.Hello">
+    <property name="printer">
+      <bean class="me.june.StringPrinter"/>
+    </property>
+  </bean>
+
 </beans>
