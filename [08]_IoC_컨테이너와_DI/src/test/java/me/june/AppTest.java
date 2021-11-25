@@ -4,11 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import me.june.bean.AnnotatedHello;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
@@ -114,5 +116,14 @@ public class AppTest {
 
         hello.print();
         assertThat(printer.toString(), is("Hello Child"));
+    }
+
+    @Test
+    void simpleBeanScanning() throws Exception {
+        // Bean Scanner 의 경우 @Component, @Component 를 메타애노테이션으로 가진 애노테이션이 적용된 클래스를 basePackages 기반으로 스캔한다.
+        // 해당 빈의 아이디는 기본적으로 클래스 기반으로 지정됨
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("me.june.bean");
+        AnnotatedHello hello = ctx.getBean("annotatedHello", AnnotatedHello.class);
+        assertThat(hello, is(notNullValue()));
     }
 }
