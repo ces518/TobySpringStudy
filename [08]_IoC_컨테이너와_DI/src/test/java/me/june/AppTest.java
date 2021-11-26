@@ -4,9 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.util.HashSet;
+import java.util.Set;
 import me.june.bean.AnnotatedHello;
 import me.june.config.AnnotatedHelloConfig;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -136,6 +139,27 @@ public class AppTest {
 
         AnnotatedHelloConfig helloConfig = ctx.getBean("annotatedHelloConfig", AnnotatedHelloConfig.class);
         assertThat(helloConfig, is(notNullValue()));
+    }
+
+    @Test
+    void singletonScope() throws Exception {
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(SingletonBean.class, SingletonClientBean.class);
+        Set<SingletonBean> beans = new HashSet<>();
+
+        beans.add(ctx.getBean(SingletonBean.class));
+        beans.add(ctx.getBean(SingletonBean.class));
+        assertThat(beans.size(), is(1));
+
+        beans.add(ctx.getBean(SingletonClientBean.class).bean1);
+        beans.add(ctx.getBean(SingletonClientBean.class).bean2);
+        assertThat(beans.size(), is(1));
+    }
+
+    static class SingletonBean {}
+    static class SingletonClientBean {
+
+        @Autowired SingletonBean bean1;
+        @Autowired SingletonBean bean2;
     }
 
 }
