@@ -15,6 +15,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
@@ -162,4 +163,28 @@ public class AppTest {
         @Autowired SingletonBean bean2;
     }
 
+    @Test
+    void prototypeScope() throws Exception {
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(PrototypeBean.class, PrototypeClientBean.class);
+        Set<PrototypeBean> beans = new HashSet<>();
+
+        beans.add(ctx.getBean(PrototypeBean.class));
+        assertThat(beans.size(), is(1));
+        beans.add(ctx.getBean(PrototypeBean.class));
+        assertThat(beans.size(), is(2));
+
+        beans.add(ctx.getBean(PrototypeClientBean.class).bean1);
+        assertThat(beans.size(), is(3));
+        beans.add(ctx.getBean(PrototypeClientBean.class).bean2);
+        assertThat(beans.size(), is(4));
+
+    }
+
+    @Scope("prototype")
+    static class PrototypeBean {}
+    static class PrototypeClientBean {
+
+        @Autowired PrototypeBean bean1;
+        @Autowired PrototypeBean bean2;
+    }
 }
