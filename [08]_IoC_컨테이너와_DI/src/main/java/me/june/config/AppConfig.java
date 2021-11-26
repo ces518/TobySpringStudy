@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
 
 @Configuration
 @ComponentScan(
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
     }
 )
 @Import(DataConfig.class) // 다른 설정 정보를 포함시킬때 사용
+@ImportResource("parentContext.xml") // 특정 xml 설정을 포함시킬때 사용
 public class AppConfig {
 
 }
