@@ -4,6 +4,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 
 @Configuration
 @ComponentScan(
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.FilterType;
                                                                             // AppConfig 클래스를 제외
     }
 )
+@Import(DataConfig.class) // 다른 설정 정보를 포함시킬때 사용
 public class AppConfig {
 
 }
