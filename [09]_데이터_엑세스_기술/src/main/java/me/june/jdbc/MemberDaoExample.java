@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-public class MemberDaoExample {
+public class MemberDaoExample extends JdbcDaoSupport {
 
-    JdbcTemplate jdbcTemplate;
+    // JdbcTemplate 은 빈으로 등록가능함에도 등록하지 않아 코드 중복이 발생하고 있다.
+    // 이런 경우 슈퍼클래스로 올리고, 중복을 제거할 수 있다. 스프링은 이미 JdbcDaoSupport 클래스를 제공하고 있다.
+//    JdbcTemplate jdbcTemplate;
     SimpleJdbcInsert jdbcInsert;
     SimpleJdbcCall jdbcCall;
 
@@ -19,7 +22,8 @@ public class MemberDaoExample {
      */
     @Autowired
     public void init(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        setDataSource(dataSource);
+//        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("member");
         this.jdbcCall = new SimpleJdbcCall(dataSource).withProcedureName("memberProcedure");
     }

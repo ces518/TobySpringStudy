@@ -15,6 +15,12 @@
             <option value="$PROJECT_DIR$/[01]_오브젝트와_의존관계" />
             <option value="$PROJECT_DIR$/[02]_테스트" />
             <option value="$PROJECT_DIR$/[03]_템플릿" />
+            <option value="$PROJECT_DIR$/[04]_예외" />
+            <option value="$PROJECT_DIR$/[05]_서비스_추상화" />
+            <option value="$PROJECT_DIR$/[06]_AOP" />
+            <option value="$PROJECT_DIR$/[07]_스프링_핵심_기술_응용" />
+            <option value="$PROJECT_DIR$/[08]_IoC_컨테이너와_DI" />
+            <option value="$PROJECT_DIR$/[09]_데이터_엑세스_기술" />
           </set>
         </option>
       </GradleProjectSettings>
