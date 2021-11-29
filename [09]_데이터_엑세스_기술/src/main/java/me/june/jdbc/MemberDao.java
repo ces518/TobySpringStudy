@@ -1,8 +1,11 @@
 package me.june.jdbc;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -73,5 +76,23 @@ public class MemberDao {
 
         // queryForMap 의 다중 로우 버전이다.
         List<Map<String, Object>> resultMaps = template.queryForList("select * from member");
+    }
+
+    public void batch() {
+        // BatchPreparedStatementSetter 인터페이스 구현체를 인자로 받는다.
+        // 내부적으로 JDBC 의 addBatch / executeBatch 메소드를 통해 SQL 을 한번에 처리한다.
+        template.batchUpdate(MEMBER_INSERT_SQL_NAMED_PARAMETERS, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setString(1, "dd");
+                /// ...
+            }
+
+            @Override
+            public int getBatchSize() {
+                return 10;
+            }
+        });
     }
 }
