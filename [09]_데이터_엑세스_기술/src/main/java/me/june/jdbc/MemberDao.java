@@ -2,6 +2,7 @@ package me.june.jdbc;
 
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 public class MemberDao {
@@ -17,6 +18,13 @@ public class MemberDao {
         .addValue("id", 1)
         .addValue("name", "Spring")
         .addValue("point", 3.5);
+
+    /*
+    * 맵 대신 도메인객체 혹은 DTO 를 사용할 수 있다.
+    * 오브젝트의 프로퍼티 명과 SQL 네임드 파라미터를 일치시켜 바인딩 해주는 방식이다.
+    * 도메인 오브젝트의 프로퍼티와 SQL 의 네임드 파라미터를 일치하게만 해준다면 편리하게 사용할 수 있다.
+    * */
+    BeanPropertySqlParameterSource beanPropertyParams = new BeanPropertySqlParameterSource(new Member(1L, "Spring", 3.5));
 
     /*
     JdbcTemplate 은 Thread-Safe 하기 때문에 빈으로 등록해서 사용이 가능함.
