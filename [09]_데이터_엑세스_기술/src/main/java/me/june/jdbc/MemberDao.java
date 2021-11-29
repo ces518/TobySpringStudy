@@ -1,6 +1,9 @@
 package me.june.jdbc;
 
+import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -49,5 +52,26 @@ public class MemberDao {
         // SqlParameterSource
         template.update(MEMBER_INSERT_SQL_NAMED_PARAMETERS, beanPropertyParams);
 
+    }
+
+    public void select() {
+        // queryForInt/queryForLong : Deprecated
+
+        // SQL 실행결과로 하나의 Row 를 받는다면 문제가 없지만, 검색된 로우가 없다면 EmptyResultDataAccessException 이 발생한다.
+        String name = template.queryForObject("select name from member where id = ?", String.class, 1L);
+
+        // SQL 실행결과로 여러 컬럼을 가진 경우 사용한다. RowMapper 인터페이스 구현체를 인자로 받는다.
+        Member member = template.queryForObject("select * from member where id = ?",
+            new BeanPropertyRowMapper<>(Member.class), 1L);
+
+        // SQL 실행 결과로 여러 컬럼을 가진 로우를 도메인 객체나 DTO 에 매핑해준다. queryForObject 와 달리 여러 로우를 처리할 수 있다.
+        // 로우의 갯수가 0이어도 예외가 발생하지 않는다.
+        List<Member> members = template.query("select * from member", new BeanPropertyRowMapper<Member>(Member.class));
+
+        // queryForObject 와 같이 단일 로우 처리시 사용한다. 로우의 결과를 Map 에 담아 반호나해준다.
+        Map<String, Object> resultMap = template.queryForMap("select * from member");
+
+        // queryForMap 의 다중 로우 버전이다.
+        List<Map<String, Object>> resultMaps = template.queryForList("select * from member");
     }
 }
