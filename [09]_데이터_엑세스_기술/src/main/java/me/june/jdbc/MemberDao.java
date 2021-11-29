@@ -10,11 +10,15 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.KeyHolder;
 
 public class MemberDao {
 
     private static final String MEMBER_INSERT_SQL = "INSERT INTO MEMBER(ID, NAME, POINT) VALUES (?, ?, ?)";
     private static final String MEMBER_INSERT_SQL_NAMED_PARAMETERS = "INSERT INTO MEMBER(ID, NAME, POINT) VALUES (:id, :name, :point)";
+
+    DataSource dataSource;
 
     /*
     * 파라미터 정보를 Map 을 활용해서 넣는다면, 자동으로 키값과 일치하는 값이 들어간다.
@@ -38,8 +42,17 @@ public class MemberDao {
     * */
     JdbcTemplate template;
 
+    SimpleJdbcInsert jdbcInsert;
+
     public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
         template = new JdbcTemplate(dataSource);
+        jdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("member"); // 지정된 테이블 명으로 테이블 메타정보를 읽어와 INSERT 문을 생성한다.
+        // withSchemaName/withCatalogName 스키마와 카타로그 지정시 사용
+        // usingColumns(String columnNames); 기본적으로 테이블의 모든 컬럼을 활용해 INSERT 문을 작성한다. / usingColumns 사용시 일부컬럼만 활용이 가능하다.
+        // usingGeneratedKeyColumns(String columnNames); DB 에 의해 자동생성되는 키 컬럼 지정이 가능하다. 해당 값은 INSERT 실행 후 가져올 수 있다.
+        // withoutTableColumnMetaDataAccess(); DB 에서 테이블 메타데이터를 가져오지 않는다. 메타 정보 대신 파라미터로 제공된 정보를 활용한다. (일부디비는 메타정보를 제공하지 않음 이때 사용)
+
     }
 
     /**
@@ -94,5 +107,23 @@ public class MemberDao {
                 return 10;
             }
         });
+    }
+
+    public void insert() {
+        Member member = new Member(1L, "Spring", 3.5);
+        jdbcInsert.execute(new BeanPropertySqlParameterSource(member));
+
+        // 자동생성 키를 설정한 등록
+        // 자동생성 키를 반환받으려면 usingGeneratedKeyColumns 를 지정해야 한다.
+        SimpleJdbcInsert registerInsert = new SimpleJdbcInsert(dataSource)
+            .withTableName("register")
+            .usingGeneratedKeyColumns("id");
+        int key = registerInsert.executeAndReturnKey(new MapSqlParameterSource("name", "Spring"))
+            .intValue();
+
+        // 자동생성 키 컬럼이 하나 이상일 경우 사용한다. 이때 KeyHolder 타입을 사용
+        KeyHolder keyHolder = registerInsert.executeAndReturnKeyHolder(
+            new MapSqlParameterSource("name", "Spring"));
+        List<Map<String, Object>> keyList = keyHolder.getKeyList();
     }
 }
