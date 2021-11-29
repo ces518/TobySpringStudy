@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jdbc.core.simple.SimpleJdbcCallOperations;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -125,5 +127,20 @@ public class MemberDao {
         KeyHolder keyHolder = registerInsert.executeAndReturnKeyHolder(
             new MapSqlParameterSource("name", "Spring"));
         List<Map<String, Object>> keyList = keyHolder.getKeyList();
+    }
+
+    public void jdbcCall() {
+        // 프로시저 콜
+        SimpleJdbcCall procedure = new SimpleJdbcCall(dataSource).withProcedureName("procedure");
+        String result = procedure.executeObject(String.class, 1L);
+
+        // 펑션
+        SimpleJdbcCall function = new SimpleJdbcCall(dataSource).withFunctionName("function");
+        String ret = function.executeFunction(String.class, 1L);
+
+        // 프로시져가 ResultSet 을 돌려주는 경우
+        SimpleJdbcCall returningResultSet = new SimpleJdbcCall(dataSource)
+            .withProcedureName("procedure")
+            .returningResultSet("memberProcedure", new BeanPropertyRowMapper<>(Member.class));
     }
 }
