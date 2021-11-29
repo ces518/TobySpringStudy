@@ -35,4 +35,19 @@ public class MemberDao {
     public void setDataSource(DataSource dataSource) {
         template = new JdbcTemplate(dataSource);
     }
+
+    /**
+     * SQL 실행시 INSERT, UPDATE, DELETE SQL 과 같은 DML 사용시에는 update 메소드를 사용한다.
+     */
+    public void execute() {
+        // 가변인자
+        template.update(MEMBER_INSERT_SQL_NAMED_PARAMETERS, 1, "Spring", 1.5);
+
+        // 맵
+        template.update(MEMBER_INSERT_SQL_NAMED_PARAMETERS, params);
+
+        // SqlParameterSource
+        template.update(MEMBER_INSERT_SQL_NAMED_PARAMETERS, beanPropertyParams);
+
+    }
 }
