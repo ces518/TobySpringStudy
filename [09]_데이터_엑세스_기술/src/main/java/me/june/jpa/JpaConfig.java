@@ -1,11 +1,14 @@
 package me.june.jpa;
 
 import java.util.Properties;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.orm.jpa.EntityManagerFactoryAccessor;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
@@ -33,7 +36,7 @@ public class JpaConfig {
      * 스프링이 제공하는 다양한 추상화 기법 과 JPA 확장 기능등 다양한 지원을 받을 수 있기 때문에 추천하는 방법
      */
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManager() {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         localContainerEntityManagerFactoryBean.setDataSource(dataSource());
         localContainerEntityManagerFactoryBean.setPersistenceUnitName("default 가 아니라면 Unit 네임 지정");
@@ -71,6 +74,15 @@ public class JpaConfig {
     @Bean
     public InstrumentationLoadTimeWeaver loadTimeWeaver() {
         return new InstrumentationLoadTimeWeaver();
+    }
+
+    /**
+     * 컨테이너가 관리하는 EntityManager 는 반드시 트랜잭션 매니저가 필요하다.
+     * JDBC 는 자체적으로 트랜잭션 모드를 갖고 있지만, JPA 는 반드시 트랜잭션 안에서 동작해야한다.
+     */
+    @Bean
+    public JpaTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
 
     @Bean
