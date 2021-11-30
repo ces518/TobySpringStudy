@@ -1,12 +1,9 @@
 package me.june.ibatis;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.event.RowHandler;
 import com.ibatis.sqlmap.engine.mapping.statement.DefaultRowHandler;
 import java.util.List;
 import java.util.Map;
 import me.june.Member;
-import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 public class IBatisMemberDao extends SqlMapClientDaoSupport {
