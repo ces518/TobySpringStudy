@@ -7,7 +7,9 @@ import javax.persistence.PersistenceContextType;
 import javax.persistence.PersistenceUnit;
 import me.june.Member;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository // PersistenceExceptionTranslationPostProcessor 가 빈으로 등록되어 있어야 한다.
 public class JpaMemberDao {
 
 //    JpaTemplate jpaTemplate;
