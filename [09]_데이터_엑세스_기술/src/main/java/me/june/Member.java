@@ -1,9 +1,19 @@
 package me.june;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Member {
 
+    @Id
     Long id;
+
+    @Column(length = 100)
     String name;
+
+    @Column(nullable = false)
     double point;
 
     public Member() {

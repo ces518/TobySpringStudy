@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
+
+<!-- persistence-unit 은 하나 이상이 지정될 수 있다. -->
+  <persistence-unit name="default">
+    <class>me.june.Member</class>
+    <exclude-unlisted-classes/> <!-- @Entity 적용된 클래스를 자동 스캔하지 않는다. -->
+    <properties>
+<!--      바이트코드 위빙 기능을 사용하지 않음 (레이지 로딩 등) -->
+      <property name="eclipselink.weaving" value="false"/>
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="subUnit">
+
+  </persistence-unit>
+
+</persistence>
