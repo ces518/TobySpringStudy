@@ -1,4 +1,4 @@
-package me.june.jdbc;
+package me.june;
 
 public class Member {
 
