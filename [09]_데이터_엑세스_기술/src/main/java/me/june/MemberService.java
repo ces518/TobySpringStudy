@@ -4,11 +4,14 @@ import me.june.jdbc.MemberDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
+@Transactional
 public class MemberService {
 
     @Autowired
@@ -20,6 +23,7 @@ public class MemberService {
     public void init(PlatformTransactionManager transactionManager) {
         transactionTemplate = new TransactionTemplate(transactionManager);
     }
+
 
     public void addMembers(final List<Member> members) {
         // 트랜잭션 속성을 변경하려면 TransactionTemplate 을 생성할 때 TransactionDefinition 을 인자로 제공하면 된다.
@@ -34,4 +38,23 @@ public class MemberService {
         });
     }
 
+    /**
+     * 프록시 기반이기 때문에 주의해서 사용해야 한다.
+     * 반드시 "클라이언트를 통한 호출" 에서만 프록시가 적용된다.
+     * 자기 자신의 메소드를 호출할 때에는 프록시가 적용되지 않는다.
+     * addMember() 메소드는 REQUIRES_NEW 가 적용되지 않고, complexWork 메소드의 트랜잭션에 참여하게 될 뿐이다.
+     *
+     * 이런 문제를 해결하는 방식은 두 가지 방법이 있다.
+     * 1. AopContext.currentProxy() 현재 프록시를 가져오게끔 제공해주는 메소드이다. Thread-Local 기반으로 동작하기 때문에 유의해서 사용해야 한다.
+     * 2. AspectJ AOP : 프록시 대신 바이트코드를 직접 변경해서 부가기능을 추가하기 때문에 자신의 메소드를 호출하더라도 잘 동작한다.
+     */
+    public void complexWork() {
+        // ..
+        this.addMember(new Member());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void addMember(Member member) {
+        // ...
+    }
 }
