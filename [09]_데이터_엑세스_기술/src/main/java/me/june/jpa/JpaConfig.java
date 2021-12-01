@@ -41,6 +41,7 @@ public class JpaConfig {
         localContainerEntityManagerFactoryBean.setDataSource(dataSource());
         localContainerEntityManagerFactoryBean.setPersistenceUnitName("default 가 아니라면 Unit 네임 지정");
         localContainerEntityManagerFactoryBean.setPersistenceXmlLocation("기본 경로 및 파일이 아니라면 별도 지정필요");
+        localContainerEntityManagerFactoryBean.setPackagesToScan("me.june"); // persistence.xml 없이 패키지 기반 스캐닝을 할 수 잇게 지원한다.
 
         // EntityManagerFactory 를 위한 프로퍼티 지정시 사용한다.
         Properties properties = new Properties();
