@@ -31,6 +31,7 @@ public class HibernateConfig {
 
     /**
      * HibernateTransaction 은 HibernateTransactionManager / JtaTransactionManager(글로벌 트랜잭션) 두 가지를 사용할 수 있다.
+     * JpaTransactionManager 와 마찬가지로 DataSourceTransactionManager 기능을 제공한다.
      */
     @Bean
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
