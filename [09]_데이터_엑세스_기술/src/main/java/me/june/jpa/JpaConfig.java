@@ -79,6 +79,8 @@ public class JpaConfig {
     /**
      * 컨테이너가 관리하는 EntityManager 는 반드시 트랜잭션 매니저가 필요하다.
      * JDBC 는 자체적으로 트랜잭션 모드를 갖고 있지만, JPA 는 반드시 트랜잭션 안에서 동작해야한다.
+     * JpaTransactionManager 는 DataSourceTransactionManager 가 제공하는 DataSource 레벨의 트랜잭션 관리 기능을 동시에 제공한다.
+     * 즉 JDBC 와 JPA 를 아우르는 트랜잭션 매니저 할 수 있다.
      */
     @Bean
     public JpaTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
