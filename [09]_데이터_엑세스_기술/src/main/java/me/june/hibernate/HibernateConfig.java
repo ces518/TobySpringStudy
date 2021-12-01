@@ -8,9 +8,13 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 
 import javax.sql.DataSource;
 import java.util.Properties;
+
+import static org.hibernate.cfg.AvailableSettings.DIALECT;
+import static org.hibernate.cfg.AvailableSettings.SHOW_SQL;
 
 @Configuration
 public class HibernateConfig {
@@ -20,6 +24,13 @@ public class HibernateConfig {
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
+        // LocalSessionFactoryBuilder 를 활용한 SessionFactory 등록
+        SessionFactory aTrue = new LocalSessionFactoryBuilder(dataSource())
+                .scanPackages("me.june.hibernate")
+                .setProperty(SHOW_SQL, "true")
+                .setProperty(DIALECT, "..")
+                .buildSessionFactory();
+
         LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
         localSessionFactoryBean.setDataSource(dataSource());
         localSessionFactoryBean.setConfigLocation(resourceLoader.getResource("classpath:hibernate/hibernate.cfg.xml"));
