@@ -1,20 +1,23 @@
 package me.june.jpa;
 
-import java.util.Properties;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.orm.jpa.EntityManagerFactoryAccessor;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
+@EnableTransactionManagement(proxyTargetClass = true) // @Transactional 애노테이션을 활용한 트랜잭션 설정을 가능하게 해준다.
 public class JpaConfig {
 
     /**
@@ -84,7 +87,7 @@ public class JpaConfig {
      * 즉 JDBC 와 JPA 를 아우르는 트랜잭션 매니저 할 수 있다.
      */
     @Bean
-    public JpaTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
