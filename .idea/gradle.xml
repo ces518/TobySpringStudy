@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/[07]_스프링_핵심_기술_응용" />
             <option value="$PROJECT_DIR$/[08]_IoC_컨테이너와_DI" />
             <option value="$PROJECT_DIR$/[09]_데이터_엑세스_기술" />
+            <option value="$PROJECT_DIR$/[10]_스프링_웹기술과_스프링MVC" />
           </set>
         </option>
       </GradleProjectSettings>
