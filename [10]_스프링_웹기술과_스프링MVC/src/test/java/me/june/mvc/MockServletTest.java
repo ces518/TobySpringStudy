@@ -1,10 +1,13 @@
 package me.june.mvc;
 
+import me.june.mvc.serlvet.ConfigurableDispatcherServlet;
 import me.june.mvc.serlvet.SimpleGetServlet;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.mock.web.MockServletConfig;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -38,5 +41,34 @@ public class MockServletTest {
 
         // then
         assertThat(response.getContentAsString()).isEqualTo("<html><body>Hello Spring</body></html>");
+    }
+
+    /**
+     * ConfigurableDispatchServlet 디스패처 서블릿을 테스트환경에서 보다 쉽게 테스트가능하게 지원해주는 확장 클래스이다.
+     * XML 설정 파일위치나 빈 클래스 를 직접 등록할 수도 있기 때문에 테스트마다 독립적인 설정 / 빈 클래스사용이 가능하다.
+     * 유용한 기능중 하나는 ModelAndView 를 저장해 두었다가 테스트에서 참조할 수도 있다.
+     */
+    @Test
+    void dispatcherServlet() throws ServletException, IOException {
+        // given
+        ConfigurableDispatcherServlet servlet = new ConfigurableDispatcherServlet();
+        servlet.setRelativeLocations(getClass(), "spring-servlet.xml"); // 설정 파일 추가
+        servlet.setClasses(HelloSpring.class); // 빈 클래스 추가
+        servlet.init(new MockServletConfig("spring"));
+
+        // MockRequest/Response 생성
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hello");
+        request.addParameter("name", "Spring");
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // when
+        // HelloController 로 요청을 보냄
+        servlet.service(request, response);
+
+        // then
+        ModelAndView mav = servlet.getModelAndView();
+        assertThat(mav.getViewName()).isEqualTo("/WEB-INF/view/hello.jsp");
+        assertThat(mav.getModel().get("message")).isEqualTo("Hello Spring");
     }
 }

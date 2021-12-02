@@ -5,6 +5,5 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-    <bean class="me.june.mvc.AppConfig"/>
-
+    <bean name="/hello" class="me.june.mvc.HelloController"/>
 </beans>
