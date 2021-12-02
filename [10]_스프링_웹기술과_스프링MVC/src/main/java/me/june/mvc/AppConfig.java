@@ -10,4 +10,14 @@ public class AppConfig {
     public HelloSpring helloSpring() {
         return new HelloSpring();
     }
+
+    /**
+     * BeanNameUrlHandlerMapping 에 의해 매핑되도록 등록한다.
+     * 빈의 이름을 기반으로 Handler 를 찾는다.
+     */
+    @Bean(name = "/hello")
+    public HelloController helloController() {
+        return new HelloController();
+    }
+
 }
