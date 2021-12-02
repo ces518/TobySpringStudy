@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * 템플릿 메소드 패턴을 적용한 기반 컨트롤러
  * Controller 인터페이스를 구현한 어댑터를 사용한다 SimpleControllerHandlerAdapter
+ * 추가적으로 LastModified 인터페이스도 지원한다. 이는 304 Not Modified 응답을 주기 위한 용도이다.
  */
 abstract class SimpleController implements Controller {
     private String[] requiredParams;
