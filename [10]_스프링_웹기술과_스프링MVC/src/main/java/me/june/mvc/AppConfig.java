@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,5 +55,17 @@ public class AppConfig {
                 return HandlerInterceptor.super.preHandle(request, response, handler);
             }
         };
+    }
+
+    /**
+     * 주로 JSP 를 뷰로 사용할때 사용한다.
+     * 기본적으로 등록되어 있다.
+     */
+    @Bean
+    public InternalResourceViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/WEB-INF/view");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
     }
 }
