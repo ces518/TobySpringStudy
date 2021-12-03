@@ -4,10 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
-import org.springframework.web.servlet.view.BeanNameViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.ResourceBundleViewResolver;
-import org.springframework.web.servlet.view.XmlViewResolver;
+import org.springframework.web.servlet.view.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -100,6 +97,20 @@ public class AppConfig {
     @Bean
     public BeanNameViewResolver beanNameViewResolver() {
         return new BeanNameViewResolver();
+    }
+
+    /**
+     * ContentNegotiatingViewResolver 는 뷰이름을 이용해 뷰 오브젝트를 찾지 않는다.
+     * 미디어 타입 정보를 활용해 다른 뷰 리졸버에서 위임한다.
+     * 뷰 리졸버를 결정하는 리졸버이다.
+     * 뷰 리볼버를 찾는 방식
+     * 1. 미디어 타입의 결정(URL 확장자 / 포맷을 지정하는 파라미터 / Accept Header 3가지 방식 지원)
+     * 2. 뷰 리볼버 위임을 통한 후보 뷰 선정
+     * 3. 미디어 타입 비교를 통한 최종 뷰선정 (미디어 타입과 뷰 리졸버에서 찾는 후보 뷰 목록과 비교휴 최종 뷰 결정)
+     */
+    @Bean
+    public ContentNegotiatingViewResolver contentNegotiatingViewResolver() {
+        return new ContentNegotiatingViewResolver();
     }
 
 }
