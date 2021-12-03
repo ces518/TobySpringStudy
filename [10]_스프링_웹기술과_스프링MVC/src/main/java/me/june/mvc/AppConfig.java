@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,5 +68,16 @@ public class AppConfig {
         viewResolver.setPrefix("/WEB-INF/view");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
+    }
+
+    /**
+     * 컨트롤러 마다 뷰의 종류가 달라 질 수 있다면, 한가지 뷰만 지원하는 뷰 리졸버를 사용할 수 없다.
+     * 이런 경우 외부 리소스 파일에 각 뷰에 해당하는 뷰 클래스와설정을 담아두고 이를 참조하는 ResourceBundleViewResolver, XmlViewResolver 를 사용해야 한다.
+     * ResourceBundleViewResolver 는 기본적으로 views.properties 파일을 참조한다.
+     * Deprecated 되었다.
+     */
+    @Bean
+    public ResourceBundleViewResolver resourceBundleViewResolver() {
+        return new ResourceBundleViewResolver();
     }
 }
