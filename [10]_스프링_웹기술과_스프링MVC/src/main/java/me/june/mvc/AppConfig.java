@@ -3,7 +3,9 @@ package me.june.mvc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import org.springframework.web.servlet.view.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -113,4 +115,28 @@ public class AppConfig {
         return new ContentNegotiatingViewResolver();
     }
 
+    /**
+     * 기본으로 등록되는 2가지 예외 핸들러에서 처리하지 못할경우 처리를 하는 마지막 핸들러
+     * 스프링 내부적으로 발생하는 주요 예외를 처리하는 표준 예외처리를 담당한다.
+     * 컨트롤러 메소드를 찾지 못하는 예외 (NoSuchRequestHandlingMethodException) 이 발생하면 404 응답을 내려준다.
+     */
+    @Bean
+    public DefaultHandlerExceptionResolver exceptionResolver() {
+        return new DefaultHandlerExceptionResolver();
+    }
+
+    /**
+     * SimpleMappingExceptionResolver 는 web.xml 의 error-page 와 비슷하게 예외처리를 담당한다.
+     */
+    @Bean
+    public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
+
+        Properties properties = new Properties();
+        properties.put("DataAccessException", "error/dao");
+        resolver.setExceptionMappings(properties);
+        resolver.setDefaultErrorView("error/default");
+
+        return resolver;
+    }
 }
