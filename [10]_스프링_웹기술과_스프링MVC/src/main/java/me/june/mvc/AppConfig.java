@@ -3,8 +3,10 @@ package me.june.mvc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import org.springframework.web.servlet.view.*;
 
@@ -138,5 +140,15 @@ public class AppConfig {
         resolver.setDefaultErrorView("error/default");
 
         return resolver;
+    }
+
+    /**
+     * LocaleResolver 지역정보 (Locale) 을 결정하는 방식
+     * 디폴트로 AcceptHeaderLocaleResolver 를 사용한다.
+     * 브라우저 설정을 따르지않는다면 SessionLocalResolver/CookieLocalResolver 를 사용하는 것이 낫다.
+     */
+    @Bean
+    public LocaleResolver localeResolver() {
+        return new AcceptHeaderLocaleResolver();
     }
 }
