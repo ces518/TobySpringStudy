@@ -6,6 +6,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.ResourceBundleViewResolver;
+import org.springframework.web.servlet.view.XmlViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,5 +80,15 @@ public class AppConfig {
     @Bean
     public ResourceBundleViewResolver resourceBundleViewResolver() {
         return new ResourceBundleViewResolver();
+    }
+
+    /**
+     * ResourceBundleViewResolver 와 유사하며, 이는 xml 파일을 참조한다.
+     * 기본적으로 /WEB-INF/view.xml
+     * 이는 ResourceBundleViewResolver 가 제공하는 지역과 기능이 제공되지 않는다.
+     */
+    @Bean
+    public XmlViewResolver xmlViewResolver() {
+        return new XmlViewResolver();
     }
 }
