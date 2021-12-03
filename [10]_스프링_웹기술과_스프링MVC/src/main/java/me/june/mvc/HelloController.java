@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.InternalResourceView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controller 인터페이스를 처리하는 HandlerAdapter 는 SimpleControllerHandlerAdapter 이다.
@@ -46,6 +48,28 @@ public class HelloController implements Controller {
         flashMap.put("message", "안녕");
         flashMap.setTargetRequestPath("/user/list");
         flashMap.startExpirationPeriod(10);
+
+        /**
+         * 플래시맵 매니저를 활용한 플래시맵 오브젝트 저장
+         */
+        RequestContextUtils.getFlashMapManager(request).saveOutputFlashMap(flashMap, request, response);
+
+        /**
+         * DispatcherServlet 이 만들어둔 FlashMap 사용
+         */
+        FlashMap fm = RequestContextUtils.getOutputFlashMap(request);
+        fm.put("message", "안녕");
+        fm.setTargetRequestPath("/user/list");
+        fm.startExpirationPeriod(10);
+
+        Map<String, ?> fm2 = RequestContextUtils.getInputFlashMap(request);
+        String message2 = (String) fm2.get("message");
+
+        /**
+         * 플래시맵 매니저는 기본적으로 HTTP 세션을 이용하는 전략을 사용한다.
+         * SessionFlashMapManager
+         * 분산 데이터 그리드나 NoSQL/RDB 등을 활용할 수도 있다.
+         */
 
         return new ModelAndView(view, model);
     }
