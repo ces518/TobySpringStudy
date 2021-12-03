@@ -1,6 +1,7 @@
 package me.june.mvc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.InternalResourceView;
@@ -36,6 +37,15 @@ public class HelloController implements Controller {
          * 컨트롤러에서 이를 직접 만들기보단 redirect: 키워드를 활용해 뷰네임을 반환해주는 것이 좋다.
          */
         RedirectView redirectView = new RedirectView("/wow");
+
+        /**
+         * URL 경로가 /user/list 인 경우 10초간 사용되는 플래시 애트리뷰트
+         * 경로와 제한 시간은 필수값이 아니다.
+         */
+        FlashMap flashMap = new FlashMap();
+        flashMap.put("message", "안녕");
+        flashMap.setTargetRequestPath("/user/list");
+        flashMap.startExpirationPeriod(10);
 
         return new ModelAndView(view, model);
     }
