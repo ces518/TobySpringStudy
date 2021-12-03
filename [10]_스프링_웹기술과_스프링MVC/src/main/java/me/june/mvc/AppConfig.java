@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
@@ -164,5 +165,14 @@ public class AppConfig {
     @Bean
     public MultipartResolver multipartResolver() {
         return new CommonsMultipartResolver();
+    }
+
+    /**
+     * RequestToViewNameTranslator 는 컨트롤러에서 뷰이름이나 뷰 오브젝트를 반환하지 않은 경우 HTTP 요청 정보를 참고해 뷰 이름을 생성해준다.
+     * /hello 라면 hello, /admin/user 라면 admin/user 와같은 형태로 뷰네임을 생성해준다.
+     */
+    @Bean
+    public RequestToViewNameTranslator requestToViewNameTranslator() {
+        return new DefaultRequestToViewNameTranslator();
     }
 }
