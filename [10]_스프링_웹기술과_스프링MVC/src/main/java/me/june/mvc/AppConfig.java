@@ -2,6 +2,8 @@ package me.june.mvc;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
@@ -150,5 +152,17 @@ public class AppConfig {
     @Bean
     public LocaleResolver localeResolver() {
         return new AcceptHeaderLocaleResolver();
+    }
+
+    /**
+     * MultipartResolver 는 파일업로드와 같은 멀티파트 포맷의 요청을 처리하는 방식
+     * CommonsMultipartResolver/StandardServletMultipartResolver 가 있따.
+     * StandardServletMultipartResolver 를 기본으로 사용한다 (스프링부트 2.5.x 기준)
+     *
+     * MultipartResolver 는 ㅁ러티파트 요청을 받으면 MultipartHttpServletRequest 로 전환해주는 역할을 한다.
+     */
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new CommonsMultipartResolver();
     }
 }
