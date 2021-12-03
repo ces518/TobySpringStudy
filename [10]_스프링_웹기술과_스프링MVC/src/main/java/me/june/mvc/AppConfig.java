@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 import org.springframework.web.servlet.view.XmlViewResolver;
@@ -91,4 +92,14 @@ public class AppConfig {
     public XmlViewResolver xmlViewResolver() {
         return new XmlViewResolver();
     }
+
+    /**
+     * BeanNameViewResolver 는 뷰이름과 동일한 빈 이름을 가진 빈을 찾아 뷰로 사용한다.
+     * 이는 별도 설정파일이 아닌 서블릿 컨텍스트의 빈을 사용한다.
+     */
+    @Bean
+    public BeanNameViewResolver beanNameViewResolver() {
+        return new BeanNameViewResolver();
+    }
+
 }
