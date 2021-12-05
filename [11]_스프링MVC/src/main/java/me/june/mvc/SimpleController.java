@@ -93,4 +93,12 @@ public class SimpleController {
     public String member(String type) {
         return "member";
     }
+
+    /**
+     * 특정 파라미터가 존재해선 안된다는 매핑 선언도 가능
+     */
+    @GetMapping(value = "params", params = "!type")
+    public String notType(String type) {
+        return "notType";
+    }
 }
