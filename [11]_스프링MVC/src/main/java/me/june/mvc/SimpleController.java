@@ -17,4 +17,46 @@ public class SimpleController {
     public String users() {
         return "users";
     }
+
+    /**
+     * 파일확장자 패턴으로 매칭도 가능하다. 하지만 스프링 부트의 경우 기본적으로 false 로 지정되어 있다.
+     * 보안상의 이슈..
+     *
+     * https://stackoverflow.com/questions/9688065/spring-mvc-application-filtering-html-in-url-is-this-a-security-issue
+     * https://stackoverflow.com/questions/30610607/how-to-change-spring-request-mapping-to-disallow-url-pattern-with-suffix
+     * https://stackoverflow.com/questions/30307678/why-does-requestmapping-spring-annotation-in-controller-capture-more-that-i-wan
+     * https://stackoverflow.com/questions/22845672/requestmapping-in-spring-with-weird-patterns
+     *
+     * https://github.com/spring-projects/spring-framework/issues/23915
+     * https://github.com/spring-projects/spring-framework/issues/24179
+     *
+     */
+    @RequestMapping("/main.*")
+    public String main() {
+        return "main";
+    }
+
+    /**
+     * value 속성에 명시하며, value 애트리뷰트 명은 생략가능
+     */
+    @RequestMapping(value = "/hello")
+    public String hello() {
+        return "hello";
+    }
+
+    /**
+     * {userId} 와 같은 형태로 패스 파라미터로 선언이 가능한데, 이를 PathVariable 이라고 한다.
+     */
+    @RequestMapping("/user/{userId}")
+    public String userId() {
+        return "userId";
+    }
+
+    /**
+     * 배열로 하나 이상의 URL 패턴 지정도 가능하다.
+     */
+    @RequestMapping({"/wow", "/fantastic"})
+    public String wow() {
+        return "wow";
+    }
 }
