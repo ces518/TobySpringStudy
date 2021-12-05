@@ -1,5 +1,7 @@
 package me.june.mvc;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -100,5 +102,14 @@ public class SimpleController {
     @GetMapping(value = "params", params = "!type")
     public String notType(String type) {
         return "notType";
+    }
+
+    /**
+     * 특정 헤더와 키/값이 동일할때만 매핑해준다.
+     * 요청 파라미터와 유사하다
+     */
+    @GetMapping(value = "header", headers = "content-type=text/*")
+    public String headers() {
+        return "";
     }
 }
