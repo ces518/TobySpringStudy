@@ -1,7 +1,9 @@
 package me.june.mvc;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * DefaultAnnotationHandlerMapping (3.1 부터 Deprecated) -> RequestMappingHandlerMapping 으로 대체됨
@@ -58,5 +60,23 @@ public class SimpleController {
     @RequestMapping({"/wow", "/fantastic"})
     public String wow() {
         return "wow";
+    }
+
+    /**
+     * 요청 메소드 지정도 가능하다 (배열로 지정가능)
+     * 동일한 요청 URL 이더라도 메소드가 다르다면, 다른 매핑으로 인지한다.
+     * @see org.springframework.web.bind.annotation.RequestMethod
+     */
+    @RequestMapping(value = "/ncucu", method = RequestMethod.GET)
+    public String requestMethod() {
+        return "requestMethod";
+    }
+
+    /**
+     * 메타 애노테이션으로 활용한 GetMapping, PostMapping 등이 편의를 위해 추가됨 (스프링 4.3)
+     */
+    @GetMapping("/ncucu2")
+    public String requestMethod2() {
+        return "requestMethod2";
     }
 }
