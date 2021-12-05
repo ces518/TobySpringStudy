@@ -79,4 +79,18 @@ public class SimpleController {
     public String requestMethod2() {
         return "requestMethod2";
     }
+
+    /**
+     * 요청 파라미터와 값을 비교해 매핑하는 방식
+     * 동일한 URL 이더라도, 요청 파라미터에 따라 별도의 작업을 해 줄 수 있다.
+     */
+    @GetMapping(value = "params", params = "type=admin")
+    public String admin(String type) {
+        return "admin";
+    }
+
+    @GetMapping(value = "params", params = "type=member")
+    public String member(String type) {
+        return "member";
+    }
 }
