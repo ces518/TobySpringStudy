@@ -31,6 +31,32 @@ public class PropertyEditorController {
         // 이런 경우 @ModelAttribute 로 받는 커맨드 오브젝트에만 가능하니 주의해야 한다.
         webDataBinder.registerCustomEditor(int.class, "age", new MinMaxPropertyEditor(0, 200));
         webDataBinder.registerCustomEditor(Code.class, new FakeCodePropertyEditor());
+
+        // 바인딩 허용 필드 / 바인딩 금지 필드 설정 및 가져오기가 가능하다.
+        // 그 외 요청 파라미터는 모두 막아준다.
+        webDataBinder.setAllowedFields("name", "email", "tel");
+        webDataBinder.getAllowedFields();
+        webDataBinder.getDisallowedFields();
+
+        // 필수 파라미터 체크시 활용이 가능하다.
+        // HTTP 요청에 필수파라미터가 제외되었다면 바인딩 에러로 처리가 가능하다.
+        webDataBinder.setRequiredFields("name");
+        webDataBinder.getRequiredFields();
+
+        // 필드마커 사용시 활용이 가능하다.
+        // HTTP Form 특성상 체크박스는 체크를 풀었을때 해당 필드를 전송하지 않는다.
+        // 때문에 SessionAttributes 등을 활용했을때 문제의 소지가 될 수 있다.
+        // 이런경우 필드마커를 활용하는데, 이는 히든 필드의 활용이다.
+        // 필드마커를 통해 해당필드가 있음을 알 수 있기 때문에 처리가 가능하다.
+        // 이는 히든필드 앞에 붙는 접두어를 지정한다.
+        // 기본값은 _ 언더바 이다.
+        webDataBinder.setFieldMarkerPrefix("_");
+        webDataBinder.getFieldMarkerPrefix();
+
+        // 히든 필드를 활용해 체크박스에 대한 디폴드값 설정시 사용한다.
+        // 기본 값은 ! 느낌표이다.
+        webDataBinder.setFieldDefaultPrefix("!");
+        webDataBinder.getFieldDefaultPrefix();
     }
 
     /**
