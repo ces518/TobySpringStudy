@@ -1,6 +1,7 @@
 package me.june.mvc.propertyeditor;
 
 import java.nio.charset.Charset;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/property-editor")
 public class PropertyEditorController {
+
+    ObjectProvider<CodePropertyEditor> codePropertyEditor;
 
     /**
      * HandlerAdapter 는, @RequestParam, @ModelAttribute 와 같은 변수 바인딩 전 WebDataBinder 를 먼저 생성한다.
