@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,6 +23,9 @@ public class PropertyEditorController {
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.registerCustomEditor(Level.class, new LevelPropertyEditor());
+        // 특정 프로퍼티 명에만 프로퍼티 에디터 적용도 가능하다.
+        // 이런 경우 @ModelAttribute 로 받는 커맨드 오브젝트에만 가능하니 주의해야 한다.
+        webDataBinder.registerCustomEditor(int.class, "age", new MinMaxPropertyEditor(0, 200));
     }
 
     /**
@@ -34,6 +38,11 @@ public class PropertyEditorController {
 
     @RequestMapping("/custom")
     public void level(@RequestParam Level level) {
+
+    }
+
+    @RequestMapping("/add")
+    public void add(@ModelAttribute Member member) {
 
     }
 
