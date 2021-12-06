@@ -5,6 +5,8 @@ import org.assertj.core.util.Sets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 
 @Configuration
 public class ConversionServiceConfig {
@@ -20,5 +22,15 @@ public class ConversionServiceConfig {
             Sets.newHashSet(Arrays.asList(new LevelToStringConverter(), new StringToLevelConverter()))
         );
         return factoryBean;
+    }
+
+    /**
+     * ConversionService 를 전역으로 등록하는 방법
+     */
+    @Bean
+    public ConfigurableWebBindingInitializer webBindingInitializer(ConversionService conversionService) {
+        ConfigurableWebBindingInitializer bindingInitializer = new ConfigurableWebBindingInitializer();
+        bindingInitializer.setConversionService(conversionService);
+        return bindingInitializer;
     }
 }
