@@ -4,6 +4,7 @@ public class Member {
 
     int id;
     int age;
+    Code userType;
 
     public int getId() {
         return id;
@@ -19,5 +20,13 @@ public class Member {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Code getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Code userType) {
+        this.userType = userType;
     }
 }
