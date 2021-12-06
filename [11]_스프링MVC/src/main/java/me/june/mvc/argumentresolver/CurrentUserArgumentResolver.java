@@ -7,6 +7,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 /**
  * WebArgumentResolver 를 활용하면 애플리케이션에 특화된 파라미터 리졸버를 만들 수 있다.
+ * Spring 3.1 부터는 HandlerMethodArgumentResolver 를 사용해야 한다.
+ * @see org.springframework.web.method.support.HandlerMethodArgumentResolver
  */
 public class CurrentUserArgumentResolver implements WebArgumentResolver {
 
