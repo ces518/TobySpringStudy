@@ -1,6 +1,8 @@
 package me.june.mvc.formatter;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 /**
@@ -14,4 +16,14 @@ public class Product {
      */
     @NumberFormat(pattern = "$###,##0.00")
     BigDecimal price;
+
+    /**
+     * 현재 지역정보에 따른 풀 포맷
+     */
+//    @DateTimeFormat(style = "F-")
+    /**
+     * 커스텀 포맷
+     */
+    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    Calendar birthDay;
 }
