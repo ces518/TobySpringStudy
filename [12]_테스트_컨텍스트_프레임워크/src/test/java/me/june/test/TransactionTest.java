@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -39,6 +40,16 @@ public class TransactionTest {
                 return null;
             }
         });
+    }
+
+    /**
+     * 트랜잭션 경셰 설정을 위해 사용한 방법도 동일하다.
+     * 마치 AOP 를 적용한 것 처럼 트랜잭션 기능을 테스트 메소드에 적용 가능하게 지원해준다.
+     */
+    @Test
+    @Transactional
+    void transactional() {
+        // DB 작업..
     }
 
     static class JpaDao {
