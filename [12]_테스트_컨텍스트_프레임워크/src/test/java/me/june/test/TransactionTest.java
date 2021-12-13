@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,7 @@ public class TransactionTest {
      */
     @Test
     @Transactional
+    @Rollback(false) // 롤백이 되지 않게 지정하는 방법
     void transactional() {
         // DB 작업..
     }
