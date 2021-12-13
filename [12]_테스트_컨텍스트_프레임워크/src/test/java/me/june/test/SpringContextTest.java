@@ -2,6 +2,7 @@ package me.june.test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = AppConfig.class)
+@ActiveProfiles("dev") // 테스트용 활성 프로파일 지정을 지원한다.
 public class SpringContextTest {
 
     @Configuration

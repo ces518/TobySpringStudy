@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/[09]_데이터_엑세스_기술" />
             <option value="$PROJECT_DIR$/[10]_스프링_웹기술과_스프링MVC" />
             <option value="$PROJECT_DIR$/[11]_스프링MVC" />
+            <option value="$PROJECT_DIR$/[12]_테스트_컨텍스트_프레임워크" />
           </set>
         </option>
       </GradleProjectSettings>
