@@ -5,6 +5,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.AfterTransaction;
+import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,19 @@ public class TransactionTest {
     @Rollback(false) // 롤백이 되지 않게 지정하는 방법
     void transactional() {
         // DB 작업..
+    }
+
+    /**
+     * 트랜잭션 시작전/완전히 종료된 후에 작업을 지원하기 위한 애노테이션
+     */
+    @BeforeTransaction
+    void setUpBeforeTx() {
+
+    }
+
+    @AfterTransaction
+    void tearDownAfterTx() {
+
     }
 
     static class JpaDao {
