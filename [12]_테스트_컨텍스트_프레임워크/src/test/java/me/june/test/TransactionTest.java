@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+/**
+ * 클래스 레벨에 적용하면 테스트 전체 메소드에 적용됨
+ */
+@Transactional
 public class TransactionTest {
 
     @Autowired
